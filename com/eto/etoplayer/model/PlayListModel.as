@@ -38,8 +38,15 @@ package com.eto.etoplayer.model
 		//		selectedIndex
 		//-------------------------------------------------------------
 		
-		[Bindable]
-		public var selectedIndex:int = -1;
+		
+		private var _selectedIndex:int = 0;
+
+		[Bindable(event="selectedItemChange")]
+		public function get selectedIndex():int
+		{
+			return _selectedIndex
+		}
+		
 		
 		//-------------------------------------------------------------
 		//		selectedItem
@@ -53,15 +60,11 @@ package com.eto.etoplayer.model
 			return _selectedItem;
 		}
 		
-		public function setSelectedItem(item:Object,
-										indexChangeEnable:Boolean = false):void
+		public function setSelectedItem(item:Object):void
 		{
-			if(indexChangeEnable)
-			{
-				selectedIndex = dataProvider.getItemIndex(item);
-			}
-			
+			_selectedIndex = dataProvider.getItemIndex(item);
 			_selectedItem = new MP3Info(item);
+			
 			dispatchEvent(new Event("selectedItemChange"));
 		}
 		

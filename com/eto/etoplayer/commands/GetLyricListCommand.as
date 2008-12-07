@@ -10,6 +10,7 @@ package com.eto.etoplayer.commands
 	import com.eto.etoplayer.util.LyricUtil;
 	import com.eto.etoplayer.view.lyric.LyricData;
 	import com.eto.etoplayer.view.lyric.lyricLoadChoose;
+	import com.eto.etoplayer.vo.GetLyricListVo;
 	import com.eto.etoplayer.vo.MP3Info;
 	
 	import flash.display.DisplayObject;
@@ -47,8 +48,10 @@ package com.eto.etoplayer.commands
 			{
 				var delegate:GetLyricListDelegate = new GetLyricListDelegate(this);
 			
-				var kewords:String = mp3Info.title;
-				delegate.send(kewords);
+				//var kewords:String = mp3Info.title;
+				var vo:GetLyricListVo = new GetLyricListVo();
+				vo.title = mp3Info.title;
+				delegate.send(vo);
 			}
 		}
 		

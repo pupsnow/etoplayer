@@ -6,7 +6,7 @@
 		itemClick="menuItemClick(event)" width="100%" iconField="@icon"/>
 	<mx:DataGrid id="musicDg" width="100%" height="100%"
 		doubleClickEnabled="true" selectedIndex="{playListModel.selectedIndex}"
-		change="playListModel.selectedIndex = musicDg.selectedIndex" 
+		
 		creationComplete="loadData()"
 		 
 		nativeDragEnter="nativeDragEnterHandler(event)"
@@ -18,6 +18,7 @@
 			<mx:DataGridColumn dataField="@artist" headerText="艺术家"/>
 		</mx:columns>
 	</mx:DataGrid>
+	
 <mx:XMLList id="menubarXML" xmlns="">
 	<menuitem label="添加" icon="addicon">
         <menuitem label="音乐文件" data="addFile"/>
@@ -31,6 +32,7 @@
 </mx:XMLList>
 <mx:Script>
 	<![CDATA[
+	//change="playListModel.setSelectedItem(musicDg.dataProvider[ musicDg.selectedIndex],true)" 
 		import mx.controls.Alert;
 	new Alert
 		import com.eto.etoplayer.events.ClipboardToPlayListEvent;

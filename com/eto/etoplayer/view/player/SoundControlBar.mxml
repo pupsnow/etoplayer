@@ -66,10 +66,10 @@
 			{
 				var listModel:PlayListModel = PlayModel.getInstance().playListModel;
 				
-				if(listModel.selectedIndex+1 < listModel.dataProvider.length)
+				if(listModel.selectedIndex+1 > listModel.dataProvider.length)
 				 	return ;
 				 	
-				listModel.selectedIndex += 1;
+				listModel.setSelectedItem(listModel.dataProvider[listModel.selectedIndex + 1]);
 				play();
 			}
 			
@@ -80,7 +80,7 @@
 				if(listModel.selectedIndex == 0)
 					return ;
 					
-				listModel.selectedIndex -= 1;
+				listModel.setSelectedItem(listModel.dataProvider[listModel.selectedIndex - 1]);
 				play();
 			}
 			
@@ -89,7 +89,6 @@
 			**/
 			private function changeVolume():void
 			{
-				//trace("change")
 				var event:VolumeChangeEvent = new VolumeChangeEvent();
 				event.value = hs.value;
 				CairngormEventDispatcher.getInstance().dispatchEvent(event);
