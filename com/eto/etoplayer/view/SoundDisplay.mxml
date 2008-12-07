@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" 
+	xmlns:player="com.eto.etoplayer.view.player.*"
+	width="100%" height="100%" verticalAlign="middle" backgroundColor="#3e3e3e"
+	xmlns:lyric="com.eto.etoplayer.view.lyric.*" xmlns:effects="com.eto.etoplayer.effects.*">
+	<mx:Script>
+		<![CDATA[
+			import mx.rpc.soap.WebService;
+			import mx.core.UIComponent;
+			import com.eto.etoplayer.model.PlayModel;
+			//new UIComponent
+			[Bindable]
+			private var model:PlayModel = PlayModel.getInstance();
+			
+			
+            
+			private function bindingProgressCompoment():void
+			{
+				model.setProgressBar(playProgressBar);
+			}
+			
+			
+
+		]]>
+	</mx:Script>
+	<!--<effects:Reflector target="{lyricShowMX}" alpha="0.6" falloff="0.7" blurAmount="0.4"/>-->
+	<lyric:LyricShowMX id="lyricShowMX" width="100%" height="100%" lyricData="{model.lyricModel.lyricData}"
+			timePosition="{model.lyricModel.timePosition}"
+			contextMenuEnable="{model.playListModel.selectedItem != null?true:false}"/>
+	<mx:HBox width="100%" height="28">
+		<mx:Label id="mediaID" text="{model.title}"/>
+		<mx:Spacer width="100%"/>
+		<mx:Label id="time" text="{model.mediaFacade.displayTime}"/>
+	</mx:HBox>
+	
+	<player:PlayProgressBar id="playProgressBar" height="5" width="100%" creationComplete="bindingProgressCompoment()"/>
+	<player:SoundControlBar width="100%"/>
+	
+</mx:VBox>

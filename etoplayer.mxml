@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:WindowedApplication xmlns:mx="http://www.adobe.com/2006/mxml"
+	xmlns:control="com.eto.etoplayer.control.*" titleBarColors="[0x555555,0x333333]"
+	xmlns:business="com.eto.etoplayer.business.*"
+	xmlns:view="com.eto.etoplayer.view.*" cornerRadius="0"
+	title="etoplayer" titleIcon="@Embed(source='assets/logo.png')"
+	layout="horizontal" showStatusBar="false" horizontalGap="0"
+	horizontalAlign="center" verticalAlign="middle"
+	modalTransparencyBlur="0" modalTransparency="0.2" modalTransparencyDuration="250"
+	paddingLeft="0" paddingRight="0" paddingBottom="0" paddingTop="0"
+    initialize="init()" borderColor="0x000000"
+	creationComplete="creationCompleteHandle()">
+	 
+	<mx:Script>
+   		<![CDATA[
+   			//import com.eto.etoplayer.util.MP3ID3Util;
+   		    //import mx.core.SoundAsset
+   			import com.eto.etoplayer.events.VersionUpdateEvent;
+   			import com.adobe.cairngorm.control.CairngormEventDispatcher;
+   			
+   			private function init():void
+   			{
+   				//new MP3ID3Util
+   				//MP3ID3Util.read(null);
+   				//SoundAsset().
+   				//flash.system.System.useCodePage=true;
+   			}
+
+   			private function creationCompleteHandle():void
+   			{
+   				var event:VersionUpdateEvent = new VersionUpdateEvent();
+				CairngormEventDispatcher.getInstance().dispatchEvent(event);
+   			}
+   			
+   		]]>
+   	</mx:Script>
+   	
+   	<!--specify style source-->
+   	<mx:Style source="style/darkroom.css"/>
+   	
+   	<!--initialize controller-->
+   	<control:ApplicationController/>
+   	
+   	<!--initialize server-->
+   	<business:Services/>
+   	
+   	<!--view-->
+	<view:Favorite/>
+	
+	<view:SoundDisplay/>
+	
+</mx:WindowedApplication>
