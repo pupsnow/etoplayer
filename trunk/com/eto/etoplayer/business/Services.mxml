@@ -25,4 +25,8 @@
 		makeObjectsBindable="false" fault="mx.controls.Alert.show('webservice fault')">
     </mx:WebService>
 	
+	<mx:HTTPService id="getLyricList" method="POST"
+		url="http://www.etoplayer.com/private/service/baiduLRC.php"
+		useProxy="false" resultFormat="xml"  
+		fault="mx.controls.Alert.show('get lyric list fault')"/>
 </business:AbstractServices>

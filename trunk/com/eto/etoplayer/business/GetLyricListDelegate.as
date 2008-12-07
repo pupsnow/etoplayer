@@ -1,11 +1,13 @@
 package com.eto.etoplayer.business
 {
 	import com.adobe.cairngorm.business.ServiceLocator;
+	import com.eto.etoplayer.vo.GetLyricListVo;
 	
 	import mx.rpc.AbstractOperation;
 	import mx.rpc.IResponder;
 	import mx.rpc.events.ResultEvent;
-	import mx.rpc.soap.mxml.WebService;
+	import mx.rpc.http.HTTPService;
+	import mx.utils.ObjectUtil;
 	
 	public class GetLyricListDelegate
 	{
@@ -13,27 +15,38 @@ package com.eto.etoplayer.business
 		
 		private var _operation:AbstractOperation;
 		
+		private var web:HTTPService;
+		
 		public function GetLyricListDelegate(responder:IResponder)
 		{
 			_responder = responder;
 		}
 		
-		public function send(keyword:String):void
+		public function send(vo:GetLyricListVo):void
 		{
-			var web:WebService = 
-					ServiceLocator.getInstance().getWebService("lrcWebService") as WebService;
-					
+			/* var web:WebService = 
+					ServiceLocator.getInstance().getWebService("lrcWebService") as WebService; 		
 			_operation = web.getOperation("LRC");
 			_operation.addEventListener(ResultEvent.RESULT,resultHandler);
-			_operation.send(keyword);
+			_operation.send(keyword); */
+			if(web)
+			{
+				web.cancel();
+			}
+			web = ServiceLocator.getInstance().getHTTPService("getLyricList");
+			web.addEventListener(ResultEvent.RESULT,resultHandler);
+			web.send(vo);
 		}
 		
 		private function resultHandler(event:ResultEvent):void
 		{
+			
+			trace(event.result.toString());
 			_responder.result(event.result);
 			
-			_operation.removeEventListener(ResultEvent.RESULT,resultHandler);
-			_operation = null;
+			web.removeEventListener(ResultEvent.RESULT,resultHandler);
+			//web = null;
+			//_operation = null;
 		}
 	}
 }
