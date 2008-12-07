@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<business:AbstractServices
+	xmlns:mx="http://www.adobe.com/2006/mxml" 
+	xmlns:business="com.eto.etoplayer.business.abstract.*">
+	
+	<mx:Script>
+		<![CDATA[
+			import com.eto.etoplayer.core.ServerLocation;
+			import mx.controls.Alert;
+			
+			[Bindable]
+			private var wsdl:String = null;
+			
+			override protected function initialize():void
+			{
+				super.initialize();
+				wsdl = ServerLocation.getHttpLocation() + "/etoplayer/WebService/Lrc.asmx?wsdl";
+			}
+		]]>
+	</mx:Script>
+	
+	<mx:WebService
+		id="lrcWebService"
+		useProxy="false" wsdl="{wsdl}"
+		makeObjectsBindable="false" fault="mx.controls.Alert.show('webservice fault')">
+    </mx:WebService>
+	
+</business:AbstractServices>

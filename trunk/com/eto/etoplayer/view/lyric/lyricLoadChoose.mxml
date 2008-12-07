@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" 
+	width="432" height="314" title="在线搜索歌词秀"
+	showCloseButton="true" close="removePopUp()">
+	<mx:Script>
+		<![CDATA[
+			import com.eto.etoplayer.vo.MP3Info;
+			import com.adobe.cairngorm.control.CairngormEventDispatcher;
+			import com.eto.etoplayer.events.GetLyricFileEvent;
+			import mx.events.ListEvent;
+			import mx.events.FlexEvent;
+			import mx.managers.PopUpManager;
+			
+			private var mp3Info:MP3Info;
+			
+			public function setData(dataProvider:Object,mp3Info:MP3Info):void
+			{
+				dg.dataProvider = dataProvider;
+				this.mp3Info = mp3Info;
+			}
+			
+			private function removePopUp():void
+			{
+				PopUpManager.removePopUp(this);
+			}
+			
+			private function itemDoubleClickHandler(event:ListEvent):void
+			{
+				var url:String = event.target.selectedItem.@url;
+				var getEvent:GetLyricFileEvent = new GetLyricFileEvent(url,mp3Info);
+				CairngormEventDispatcher.getInstance().dispatchEvent(getEvent);
+				
+				removePopUp();
+			}
+		]]>
+	</mx:Script>
+	
+	<mx:DataGrid id="dg" x="23" y="38" width="366" height="216" 
+		doubleClickEnabled="true" itemDoubleClick="itemDoubleClickHandler(event)">
+		<mx:columns>
+			<mx:DataGridColumn headerText="歌手" dataField="@artist"/>
+			<mx:DataGridColumn headerText="曲名" dataField="@title"/>
+		</mx:columns>
+	</mx:DataGrid>
+	<mx:Label x="23" y="10" text="请选择您需要下载的歌词文件"/>
+	
+</mx:TitleWindow>

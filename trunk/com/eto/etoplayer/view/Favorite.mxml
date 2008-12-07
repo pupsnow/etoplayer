@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml"
+	title="音乐收藏" width="324" height="100%" verticalGap="0">
+
+	<mx:MenuBar labelField="@label" dataProvider="{menubarXML}" height="25" 
+		itemClick="menuItemClick(event)" width="100%" iconField="@icon"/>
+	<mx:DataGrid id="musicDg" width="100%" height="100%"
+		doubleClickEnabled="true" selectedIndex="{playListModel.selectedIndex}"
+		change="playListModel.selectedIndex = musicDg.selectedIndex" 
+		creationComplete="loadData()"
+		 
+		nativeDragEnter="nativeDragEnterHandler(event)"
+		nativeDragDrop="nativeDragDropHandler(event)"
+	    itemDoubleClick="doubleClickHandler()">
+		<mx:columns>
+			<mx:DataGridColumn width="200" 
+							   dataField="@title" headerText="歌曲名" />
+			<mx:DataGridColumn dataField="@artist" headerText="艺术家"/>
+		</mx:columns>
+	</mx:DataGrid>
+<mx:XMLList id="menubarXML" xmlns="">
+	<menuitem label="添加" icon="addicon">
+        <menuitem label="音乐文件" data="addFile"/>
+        <menuitem label="音乐文件夹" data="addFolder"/>
+    </menuitem>
+    <menuitem label="移除" icon="delicon">
+        <menuitem label="移除所选" data="removeSelected"/>
+        <menuitem label="移除全部" data="removeAll"/>
+        <menuitem label="移除本程序" data="removePrograme"/>
+    </menuitem>
+</mx:XMLList>
+<mx:Script>
+	<![CDATA[
+		import mx.controls.Alert;
+	new Alert
+		import com.eto.etoplayer.events.ClipboardToPlayListEvent;
+		import com.eto.etoplayer.events.RemovePlayListItemsEvent;
+		import com.eto.etoplayer.events.SelectFileToPlayListEvent;
+		import com.eto.etoplayer.events.GetPlayListEvent;
+		import com.eto.etoplayer.model.PlayListModel;
+		import com.eto.etoplayer.events.SelectFolderToPlayListEvent;
+		import mx.events.MenuEvent;
+		import mx.controls.Menu;
+		import com.eto.etoplayer.model.PlayModel;
+		import com.eto.etoplayer.events.SoundPlayEvent;
+		import com.eto.etoplayer.model.ApplicationModel;
+		import com.adobe.cairngorm.control.CairngormEventDispatcher;
+		import com.eto.etoplayer.events.GetWebPlayListEvent;
+		
+		[Bindable]
+		private var playListModel:PlayListModel = PlayModel.getInstance().playListModel;
+		
+		[Bindable]
+		[Embed(source="images/add.png")] 
+		public var addicon:Class;
+		
+		[Bindable]
+		[Embed(source="images/del.png")] 
+		public var delicon:Class;
+            
+		private function loadData():void
+		{
+			musicDg.dataProvider = playListModel.dataProvider;
+			
+			var event:GetPlayListEvent = new GetPlayListEvent();
+			CairngormEventDispatcher.getInstance().dispatchEvent(event);
+			musicDg.selectedIndex = 0;
+		}
+		
+		private function doubleClickHandler():void
+		{
+			var item:Object = musicDg.selectedItem;
+			
+			var event:SoundPlayEvent = new SoundPlayEvent(item.@url,item);
+			CairngormEventDispatcher.getInstance().dispatchEvent(event);
+		}
+		
+		private function showMenu():void
+		{
+			var menu:Menu = new Menu();
+			menu.dataProvider = null;
+		}
+		
+		private function menuItemClick(event:MenuEvent):void
+		{
+			var sign:String = event.item.@data;
+			
+			switch(sign)
+			{
+				case "addFile" : openFile();break;
+				case "addFolder" : openFolder();break;
+				case "removeSelected" : removeSelected();break;
+				case "removeAll" : removeAll();break;
+				case "removePrograme" : openFolder();break;
+				default : break;
+			}
+		}
+		
+		private function openFile():void
+		{
+			var event:SelectFileToPlayListEvent = new SelectFileToPlayListEvent();
+			CairngormEventDispatcher.getInstance().dispatchEvent(event);
+		}
+		
+		private function openFolder():void
+		{
+			var event:SelectFolderToPlayListEvent = new SelectFolderToPlayListEvent();
+			CairngormEventDispatcher.getInstance().dispatchEvent(event);
+		}
+		
+		private function removeSelected():void
+		{
+			if(musicDg.selectedItem)
+			{
+				var event:RemovePlayListItemsEvent = 
+										  new RemovePlayListItemsEvent();
+				event.removeItems = [musicDg.selectedItem];
+				CairngormEventDispatcher.getInstance().dispatchEvent(event);
+			}
+		}
+		
+		private function removeAll():void
+		{
+			if(playListModel.dataProvider)
+			{
+				var event:RemovePlayListItemsEvent = 
+										  new RemovePlayListItemsEvent();
+				event.isRemoveAll = true;
+				CairngormEventDispatcher.getInstance().dispatchEvent(event);
+			}
+		}
+		
+		private function nativeDragEnterHandler(event:NativeDragEvent):void
+		{
+			NativeDragManager.acceptDragDrop(musicDg);
+		}
+		
+		private function nativeDragDropHandler(event:NativeDragEvent):void
+		{
+			var clipboard:Clipboard =  event.clipboard;
+			var addEvent:ClipboardToPlayListEvent = 
+										new ClipboardToPlayListEvent(clipboard);
+			CairngormEventDispatcher.getInstance().dispatchEvent(addEvent);
+		}
+	]]>
+</mx:Script>
+
+</mx:Panel>

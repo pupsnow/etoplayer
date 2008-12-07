@@ -1,0 +1,18 @@
+/* CSS file */
+global
+{
+    fontSize: 12px;
+}
+ WindowedApplication
+{
+    /* background-color:"0x676768";
+    borderColor:"0x000000"; */
+    cornerRadius : 0;
+   /*  titleBarColors : ['#676768','#676768'];
+    titleTextStyleName:"appTitleTextStyle"; */
+}
+
+/* .appTitleTextStyle
+{
+	color: #ffffff;
+} */ 
