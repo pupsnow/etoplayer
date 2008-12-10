@@ -35,5 +35,12 @@ package com.eto.etoplayer.core
 			
 			return path;
 		}
+		
+		public static function get userConfig():String
+		{
+			var path:String = userSetingPath + File.separator +"UserConfig.xml";
+			return path;
+			
+		}
 	}
 }

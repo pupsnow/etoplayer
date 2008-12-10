@@ -8,6 +8,7 @@
 	
 	<mx:Script>
 		<![CDATA[
+			import com.eto.etoplayer.vo.MP3Info;
 			import com.eto.etoplayer.model.PlayListModel;
 			import com.eto.etoplayer.states.PlayState;
 			import com.eto.etoplayer.interfaces.IMediaFacade;
@@ -51,8 +52,10 @@
 			
 			private function play():void
 			{
+				var mp3Info:MP3Info = 
+							new MP3Info(playerModel.playListModel.selectedItem);
 				var event:SoundPlayEvent = new SoundPlayEvent();
-					event.url = playerModel.playListModel.selectedItem.url;
+					event.url = mp3Info.url;
 					CairngormEventDispatcher.getInstance().dispatchEvent(event);
 			}
 			

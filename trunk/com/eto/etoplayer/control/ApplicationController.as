@@ -21,6 +21,13 @@ public class ApplicationController extends FrontController
 		addCommand(VersionUpdateEvent.VERSION_UPDATE,VersionUpdateCommand);
 		
 		//---------------------------------------------------------------
+		//					user set control
+		//---------------------------------------------------------------
+		
+		addCommand(LoadUserConfigEvent.LOAD_USER_CONFIG,LoadUserConfigCommand);
+		addCommand(SaveUserConfigEvent.SAVE_USER_CONFIG,SaveUserConfigCommand);
+		
+		//---------------------------------------------------------------
 		//					play control
 		//---------------------------------------------------------------
 		
@@ -40,6 +47,7 @@ public class ApplicationController extends FrontController
 		//---------------------------------------------------------------
 		//					playlist control
 		//---------------------------------------------------------------
+		
 		addCommand(GetPlayListEvent.GET_PLAY_LIST,GetPlayListCommand);
 		addCommand(SelectFileToPlayListEvent.SELECT_FILE_TO_PLAY_LIST,
 												 SelectFileToPlayListCommand);
@@ -49,6 +57,7 @@ public class ApplicationController extends FrontController
 												 RemovePlayListItemsCommand);
 		addCommand(ClipboardToPlayListEvent.CLIPBOARD_TO_PLAYLIST,
 												 ClipboardToPlayListCommand);
+		
 		
 	}
 }

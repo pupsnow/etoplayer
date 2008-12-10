@@ -71,14 +71,14 @@ Alert
 */
 Button
 {
-	/* disabledSkin: Embed(source="darkroom.swf", symbol="Button_disabledSkin");
+	disabledSkin: Embed(source="darkroom.swf", symbol="Button_disabledSkin");
 	downSkin: Embed(source="darkroom.swf", symbol="Button_downSkin");
 	overSkin: Embed(source="darkroom.swf", symbol="Button_overSkin");
 	upSkin: Embed(source="darkroom.swf", symbol="Button_upSkin");
 	selectedDisabledSkin: Embed(source="darkroom.swf", symbol="Button_disabledSkin");
 	selectedDownSkin: Embed(source="darkroom.swf", symbol="Button_upSkin");
 	selectedOverSkin: Embed(source="darkroom.swf", symbol="Button_overSkin");
-	selectedUpSkin: Embed(source="darkroom.swf", symbol="Button_downSkin"); */
+	selectedUpSkin: Embed(source="darkroom.swf", symbol="Button_downSkin"); 
 	color: #aaaaaa;
 	textRollOverColor: #ffffff;
 	textSelectedColor:#ffffff;
@@ -335,25 +335,25 @@ ColorPicker
 ComboBox
 {
 
-	disabledSkin: Embed(source="darkroom.swf", symbol="ComboBoxArrow_disabledSkin");
-	downSkin: Embed(source="darkroom.swf", symbol="ComboBoxArrow_downSkin");
-	editableDisabledSkin: Embed(source="darkroom.swf", symbol="ComboBoxArrow_editableDisabledSkin");
+	/* disabledskin: embed(source="darkroom.swf", symbol="comboboxarrow_disabledskin");
+	downskin: embed(source="darkroom.swf", symbol="comboboxarrow_downskin"); */
+	/* editableDisabledSkin: Embed(source="darkroom.swf", symbol="ComboBoxArrow_editableDisabledSkin");
 	editableDownSkin: Embed(source="darkroom.swf", symbol="ComboBoxArrow_editableDownSkin");
 	editableOverSkin: Embed(source="darkroom.swf", symbol="ComboBoxArrow_editableOverSkin");
-	editableUpSkin: Embed(source="darkroom.swf", symbol="ComboBoxArrow_editableUpSkin");
+	editableUpSkin: Embed(source="darkroom.swf", symbol="ComboBoxArrow_editableUpSkin"); */
 	overSkin: Embed(source="darkroom.swf", symbol="ComboBoxArrow_overSkin");
-	upSkin: Embed(source="darkroom.swf", symbol="ComboBoxArrow_upSkin");
-	color: #cccccc;
+	/* upSkin: Embed(source="darkroom.swf", symbol="ComboBoxArrow_upSkin"); */
+	color: #aaaaaa;
 	textRollOverColor: #ffffff;
 	textSelectedColor:#ffffff;
 	textDisabledColor: #1e1e1e;
 	dropDownStyleName: "dropDown";
-	fontSize:11;
+	fontSize:12;
 	fontWeight:normal;
 	
-	arrowButtonWidth:12;
-	paddingRight:0;
-	paddingLeft:0;
+	/* arrowButtonWidth:12; */
+	/* paddingRight:0;
+	paddingLeft:0; */
 }
 
 /*
@@ -986,7 +986,6 @@ TabNavigator
 TextInput
 {
 	color:#000000;
-	fontFamily:"Myriad Pro";
 }
 
 /*
@@ -997,7 +996,6 @@ TextInput
 TextArea
 {
 	color: #000000;
-	fontFamily:"Myriad Pro";
 }		
 
 /*
@@ -1085,5 +1083,18 @@ TitleWindow
 }
 
 
-	
-	
+SearchInput {
+  textdefultColor : #7f7f7f;
+  textColor : #ffffff;
+  borderStyle: none;
+  inputStyleName : "inputTextStyleName";
+}	
+.inputTextStyleName
+{
+   borderStyle: solid;
+   borderColor: #000000;
+   themeColor: #000000;
+   backgroundColor: #4f4f4f;
+   borderThickness: 1;
+   cornerRadius: 0;
+}	

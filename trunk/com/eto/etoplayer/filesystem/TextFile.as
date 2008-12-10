@@ -20,7 +20,7 @@ package com.eto.etoplayer.filesystem
 			var stream:FileStream = new FileStream();
 			if(!textFile.exists)
 			{
-				return "";
+				return null;
 			}
 			
 			stream.open(textFile,FileMode.READ);
