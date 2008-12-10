@@ -315,7 +315,7 @@ CheckBox
 //  ColorPicker
 //------------------------------
 */
-ColorPicker
+/* ColorPicker
 {
 	disabledSkin: Embed(source="darkroom.swf", symbol="ColorPicker_disabledSkin");
 	downSkin: Embed(source="darkroom.swf", symbol="ColorPicker_downSkin");
@@ -325,7 +325,7 @@ ColorPicker
 	editableDownSkin: Embed(source="darkroom.swf", symbol="ColorPicker_downSkin");
 	editableOverSkin: Embed(source="darkroom.swf", symbol="ColorPicker_overSkin");
 	editableUpSkin: Embed(source="darkroom.swf", symbol="ColorPicker_upSkin");
-}		
+} */		
 
 /*
 //------------------------------
