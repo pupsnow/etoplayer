@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml"
-	title="音乐收藏" width="324" height="100%" verticalGap="0">
-
-	<mx:MenuBar labelField="@label" dataProvider="{menubarXML}" height="25" 
-		itemClick="menuItemClick(event)" width="100%" iconField="@icon"/>
+	title="音乐收藏" width="324" height="100%" verticalGap="0" 
+	xmlns:view="com.eto.etoplayer.view.*">
+	
+	<view:PlayMenuBar/>
+	<mx:HBox width="100%" height="23" backgroundColor="#3e3e3e" horizontalGap="1">
+		<mx:ComboBox text="默认分组" height="23" width="100"/>
+		<mx:VRule height="100%"/>
+		<view:SearchInput defaultClew="请输入查询关键词" height="23" width="100%"/>
+	</mx:HBox>
+	
 	<mx:DataGrid id="musicDg" width="100%" height="100%"
 		doubleClickEnabled="true" selectedIndex="{playListModel.selectedIndex}"
-		
 		creationComplete="loadData()"
-		 
 		nativeDragEnter="nativeDragEnterHandler(event)"
 		nativeDragDrop="nativeDragDropHandler(event)"
 	    itemDoubleClick="doubleClickHandler()">
@@ -19,30 +23,13 @@
 		</mx:columns>
 	</mx:DataGrid>
 	
-<mx:XMLList id="menubarXML" xmlns="">
-	<menuitem label="添加" icon="addicon">
-        <menuitem label="音乐文件" data="addFile"/>
-        <menuitem label="音乐文件夹" data="addFolder"/>
-    </menuitem>
-    <menuitem label="移除" icon="delicon">
-        <menuitem label="移除所选" data="removeSelected"/>
-        <menuitem label="移除全部" data="removeAll"/>
-        <menuitem label="移除本程序" data="removePrograme"/>
-    </menuitem>
-</mx:XMLList>
-<mx:Script>
+	<mx:Script>
 	<![CDATA[
-	//change="playListModel.setSelectedItem(musicDg.dataProvider[ musicDg.selectedIndex],true)" 
-		import mx.controls.Alert;
-	new Alert
+	
 		import com.eto.etoplayer.events.ClipboardToPlayListEvent;
-		import com.eto.etoplayer.events.RemovePlayListItemsEvent;
-		import com.eto.etoplayer.events.SelectFileToPlayListEvent;
 		import com.eto.etoplayer.events.GetPlayListEvent;
 		import com.eto.etoplayer.model.PlayListModel;
-		import com.eto.etoplayer.events.SelectFolderToPlayListEvent;
-		import mx.events.MenuEvent;
-		import mx.controls.Menu;
+		
 		import com.eto.etoplayer.model.PlayModel;
 		import com.eto.etoplayer.events.SoundPlayEvent;
 		import com.eto.etoplayer.model.ApplicationModel;
@@ -50,16 +37,24 @@
 		import com.eto.etoplayer.events.GetWebPlayListEvent;
 		
 		[Bindable]
-		private var playListModel:PlayListModel = PlayModel.getInstance().playListModel;
-		
-		[Bindable]
 		[Embed(source="images/add.png")] 
 		public var addicon:Class;
-		
+	
 		[Bindable]
 		[Embed(source="images/del.png")] 
 		public var delicon:Class;
-            
+	
+		[Bindable]
+		[Embed(source="images/sort.png")] 
+		public var sorticon:Class;
+	
+		[Bindable]
+		[Embed(source="images/model.png")] 
+		public var modelicon:Class;
+		
+		[Bindable]
+		private var playListModel:PlayListModel = PlayModel.getInstance().playListModel;
+		
 		private function loadData():void
 		{
 			musicDg.dataProvider = playListModel.dataProvider;
@@ -77,61 +72,6 @@
 			CairngormEventDispatcher.getInstance().dispatchEvent(event);
 		}
 		
-		private function showMenu():void
-		{
-			var menu:Menu = new Menu();
-			menu.dataProvider = null;
-		}
-		
-		private function menuItemClick(event:MenuEvent):void
-		{
-			var sign:String = event.item.@data;
-			
-			switch(sign)
-			{
-				case "addFile" : openFile();break;
-				case "addFolder" : openFolder();break;
-				case "removeSelected" : removeSelected();break;
-				case "removeAll" : removeAll();break;
-				case "removePrograme" : openFolder();break;
-				default : break;
-			}
-		}
-		
-		private function openFile():void
-		{
-			var event:SelectFileToPlayListEvent = new SelectFileToPlayListEvent();
-			CairngormEventDispatcher.getInstance().dispatchEvent(event);
-		}
-		
-		private function openFolder():void
-		{
-			var event:SelectFolderToPlayListEvent = new SelectFolderToPlayListEvent();
-			CairngormEventDispatcher.getInstance().dispatchEvent(event);
-		}
-		
-		private function removeSelected():void
-		{
-			if(musicDg.selectedItem)
-			{
-				var event:RemovePlayListItemsEvent = 
-										  new RemovePlayListItemsEvent();
-				event.removeItems = [musicDg.selectedItem];
-				CairngormEventDispatcher.getInstance().dispatchEvent(event);
-			}
-		}
-		
-		private function removeAll():void
-		{
-			if(playListModel.dataProvider)
-			{
-				var event:RemovePlayListItemsEvent = 
-										  new RemovePlayListItemsEvent();
-				event.isRemoveAll = true;
-				CairngormEventDispatcher.getInstance().dispatchEvent(event);
-			}
-		}
-		
 		private function nativeDragEnterHandler(event:NativeDragEvent):void
 		{
 			NativeDragManager.acceptDragDrop(musicDg);
@@ -145,6 +85,6 @@
 			CairngormEventDispatcher.getInstance().dispatchEvent(addEvent);
 		}
 	]]>
-</mx:Script>
+	</mx:Script>
 
 </mx:Panel>

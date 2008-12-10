@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:MenuBar xmlns:mx="http://www.adobe.com/2006/mxml"
+	labelField="@label" height="25" 
+	itemClick="menuItemClick(event)" width="100%" iconField="@icon"
+	initialize="initCompoment()"
+	creationComplete="loadMenuData()">
+
+	<mx:Script>
+	<![CDATA[
+	import com.eto.etoplayer.core.UserConfig;
+	import com.eto.etoplayer.events.SaveUserConfigEvent;
+	import com.eto.etoplayer.events.SelectFileToPlayListEvent;
+	import com.eto.etoplayer.model.PlayListModel;
+	import com.eto.etoplayer.model.PlayModel;
+	import com.eto.etoplayer.events.SelectFolderToPlayListEvent;
+	import com.adobe.cairngorm.control.CairngormEventDispatcher;
+	import com.eto.etoplayer.events.RemovePlayListItemsEvent;
+	
+	import mx.events.MenuEvent;
+	import com.eto.etoplayer.core.ApplicationDispatcher;
+	
+	private var disPatcher:ApplicationDispatcher = 
+									ApplicationDispatcher.getInstance();
+	
+	private var playModel:PlayModel = PlayModel.getInstance();
+									
+	private function initCompoment():void
+	{
+		disPatcher.addEventListener(
+			ApplicationDispatcher.USER_CONFIG_COMPLETE,configCompleteHandler);
+	}
+	
+	private function configCompleteHandler(event:Event):void
+	{
+		loadMenuData();
+		
+		disPatcher.removeEventListener(
+			ApplicationDispatcher.USER_CONFIG_COMPLETE,configCompleteHandler);
+	} 
+	private function loadMenuData():void
+	{
+		 var menuItems:XML = 
+		<menuitems>
+			<menuitem label="添加" icon="addicon" data="adds">
+        		<menuitem label="音乐文件" data="addFile"/>
+     			<menuitem label="音乐文件夹" data="addFolder"/>
+			</menuitem>
+			<menuitem label="移除" icon="delicon" data="removes">
+				<menuitem label="移除所选" data="removeSelected"/>
+				<menuitem label="移除全部" data="removeAll"/>
+			</menuitem>
+			<menuitem label="排序" icon="sorticon" data="sorts">
+			</menuitem>
+			<menuitem label="模式" icon="modelicon" data="playpatterns">
+			    <menuitem label="单曲播放" data="playpattern" type="radio" pattern="single"/>
+				<menuitem label="单曲循环" data="playpattern" type="radio" pattern="singleRound"/>
+				<menuitem label="顺序播放" data="playpattern" type="radio" pattern="orderly"/>
+				<menuitem label="循环播放" data="playpattern" type="radio" pattern="orderlyRound"/>
+				<menuitem label="随机播放" data="playpattern" type="radio" pattern="random"/>
+			</menuitem>
+		</menuitems>
+		
+		var xml:XMLList = menuItems.children().(@data == "playpatterns").children().(@pattern == UserConfig.playPattern);
+		xml.@toggled = true;
+		
+		dataProvider = menuItems.children();
+	}
+	
+	private function menuItemClick(event:MenuEvent):void
+	{
+		var sign:String = event.item.@data;
+		
+		switch(sign)
+		{
+			case "addFile" : openFile();break;
+			case "addFolder" : openFolder();break;
+			case "removeSelected" : removeSelected();break;
+			case "removeAll" : removeAll();break;
+			case "playpattern" : playPatternChoose(event.item);break;
+			default : break;
+		}
+	}
+	
+	private function playPatternChoose(item:Object):void
+	{
+		var event:SaveUserConfigEvent = new SaveUserConfigEvent();
+		UserConfig.playPattern = item.@pattern;
+		CairngormEventDispatcher.getInstance().dispatchEvent(event);
+	}
+	
+	private function openFile():void
+	{
+		var event:SelectFileToPlayListEvent = new SelectFileToPlayListEvent();
+		CairngormEventDispatcher.getInstance().dispatchEvent(event);
+	}
+	
+	private function openFolder():void
+	{
+		var event:SelectFolderToPlayListEvent = new SelectFolderToPlayListEvent();
+		CairngormEventDispatcher.getInstance().dispatchEvent(event);
+	}
+	
+	private function removeSelected():void
+	{
+		if(playModel.playListModel.selectedItem)
+		{
+			var event:RemovePlayListItemsEvent = 
+									  new RemovePlayListItemsEvent();
+			event.removeItems = [playModel.playListModel.selectedItem];
+			CairngormEventDispatcher.getInstance().dispatchEvent(event);
+		}
+	}
+	
+	private function removeAll():void
+	{
+		if(playModel.playListModel.dataProvider)
+		{
+			var event:RemovePlayListItemsEvent = 
+									  new RemovePlayListItemsEvent();
+			event.isRemoveAll = true;
+			CairngormEventDispatcher.getInstance().dispatchEvent(event);
+		}
+	}
+	]]>
+	</mx:Script>
+	
+</mx:MenuBar>

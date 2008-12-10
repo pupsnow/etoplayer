@@ -132,7 +132,8 @@ public class LyricShowMX extends UIComponent
 	
 	private function researchLyricFile(event:Event):void
 	{
-		var mp3Vo:MP3Info = PlayModel.getInstance().playListModel.selectedItem;
+		var item:Object = PlayModel.getInstance().playListModel.selectedItem;
+		var mp3Vo:MP3Info = new MP3Info(item);
 		var getEvent:GetLyricListEvent = new GetLyricListEvent(mp3Vo,true);
 		CairngormEventDispatcher.getInstance().dispatchEvent(getEvent);//event.
 	}

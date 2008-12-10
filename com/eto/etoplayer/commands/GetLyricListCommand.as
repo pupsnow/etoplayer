@@ -66,8 +66,8 @@ package com.eto.etoplayer.commands
  				var len:int = lycList.length();
  				if(len > 0)
  				{
- 					//if(len == 1)
- 					//{
+ 					/* if(len == 1)
+ 					{ */
  						var lyricChoose:lyricLoadChoose = new lyricLoadChoose();
 	 					
 	 					PopUpManager.addPopUp(lyricChoose,Application.application as DisplayObject,true);
@@ -75,6 +75,10 @@ package com.eto.etoplayer.commands
 	 					
 	 					lyricChoose.setData(lycList,mp3Info);
  					//}
+ 				}
+ 				else
+ 				{
+ 					Alert.show("未在服务器上搜索到歌词");
  				}
  			}
  			catch(exception:Error)

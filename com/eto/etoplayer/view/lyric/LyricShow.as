@@ -647,7 +647,7 @@ package com.eto.etoplayer.view.lyric
 		 */		
 		public function updateDisplayList(unscaledWidth:Number,unscaledHeight:Number):void
 		{
-			trace("updateDisplayList")
+			trace("updateDisplayList");
 			//Specials the middle line`s Y.
 			middleY = int(unscaledHeight/2) ;
 			

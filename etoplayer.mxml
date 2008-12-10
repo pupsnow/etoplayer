@@ -9,10 +9,13 @@
 	modalTransparencyBlur="0" modalTransparency="0.2" modalTransparencyDuration="250"
 	paddingLeft="0" paddingRight="0" paddingBottom="0" paddingTop="0"
     initialize="init()" borderColor="0x000000"
-	creationComplete="creationCompleteHandle()">
+	creationComplete="creationCompleteHandle()" headerHeight="25">
 	 
 	<mx:Script>
    		<![CDATA[
+   		
+	
+   			import com.eto.etoplayer.events.LoadUserConfigEvent;
    			//import com.eto.etoplayer.util.MP3ID3Util;
    		    //import mx.core.SoundAsset
    			import com.eto.etoplayer.events.VersionUpdateEvent;
@@ -30,11 +33,17 @@
    			{
    				var event:VersionUpdateEvent = new VersionUpdateEvent();
 				CairngormEventDispatcher.getInstance().dispatchEvent(event);
+				
+				var configEvent:LoadUserConfigEvent = new LoadUserConfigEvent();
+				CairngormEventDispatcher.getInstance().dispatchEvent(configEvent);
    			}
    			
    		]]>
    	</mx:Script>
    	
+   	<mx:XMLList xmlns="">
+   		
+   	</mx:XMLList>
    	<!--specify style source-->
    	<mx:Style source="style/darkroom.css"/>
    	
