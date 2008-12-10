@@ -57,8 +57,7 @@ public class ApplicationController extends FrontController
 												 RemovePlayListItemsCommand);
 		addCommand(ClipboardToPlayListEvent.CLIPBOARD_TO_PLAYLIST,
 												 ClipboardToPlayListCommand);
-		
-		
+		addCommand(PlayListSortEvent.PLAY_LIST_SORT,PlayListSortCommand);
 	}
 }
 }

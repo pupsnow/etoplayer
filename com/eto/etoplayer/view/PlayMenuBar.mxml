@@ -7,6 +7,7 @@
 
 	<mx:Script>
 	<![CDATA[
+		import com.eto.etoplayer.events.PlayListSortEvent;
 	import com.eto.etoplayer.core.UserConfig;
 	import com.eto.etoplayer.events.SaveUserConfigEvent;
 	import com.eto.etoplayer.events.SelectFileToPlayListEvent;
@@ -50,12 +51,15 @@
 				<menuitem label="移除全部" data="removeAll"/>
 			</menuitem>
 			<menuitem label="排序" icon="sorticon" data="sorts">
+				<menuitem label="按歌曲名称" data="sort" field="title"/>
+				<menuitem label="按专辑名称" data="sort" field="ablum"/>
+				<menuitem label="按艺术家" data="sort" field="artist"/>
 			</menuitem>
 			<menuitem label="模式" icon="modelicon" data="playpatterns">
 			    <menuitem label="单曲播放" data="playpattern" type="radio" pattern="single"/>
 				<menuitem label="单曲循环" data="playpattern" type="radio" pattern="singleRound"/>
 				<menuitem label="顺序播放" data="playpattern" type="radio" pattern="orderly"/>
-				<menuitem label="循环播放" data="playpattern" type="radio" pattern="orderlyRound"/>
+				<menuitem label="顺序循环" data="playpattern" type="radio" pattern="orderlyRound"/>
 				<menuitem label="随机播放" data="playpattern" type="radio" pattern="random"/>
 			</menuitem>
 		</menuitems>
@@ -77,10 +81,16 @@
 			case "removeSelected" : removeSelected();break;
 			case "removeAll" : removeAll();break;
 			case "playpattern" : playPatternChoose(event.item);break;
+			case "sort" : sortList(event.item);break;
 			default : break;
 		}
 	}
 	
+	private function sortList(item:Object):void
+	{
+		var event:PlayListSortEvent = new PlayListSortEvent(item.@field);
+		CairngormEventDispatcher.getInstance().dispatchEvent(event);
+	}
 	private function playPatternChoose(item:Object):void
 	{
 		var event:SaveUserConfigEvent = new SaveUserConfigEvent();

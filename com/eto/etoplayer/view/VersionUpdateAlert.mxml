@@ -68,7 +68,7 @@
 			</mx:HBox>
 			<mx:VBox width="100%" height="100%" showEffect="Fade" 
 				verticalAlign="middle" horizontalAlign="center">
-				<mx:ProgressBar id="pb" barColor="haloGreen"
+				<mx:ProgressBar id="pb" mode="manual" barColor="haloGreen"
 					width="280" labelPlacement="right" label="已下载0%"/>
 			</mx:VBox>
 		</mx:ViewStack>
