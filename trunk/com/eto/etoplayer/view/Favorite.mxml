@@ -3,6 +3,7 @@
 	title="音乐收藏" width="324" height="100%" verticalGap="0" 
 	xmlns:view="com.eto.etoplayer.view.*">
 	
+	
 	<view:PlayMenuBar/>
 	<mx:HBox width="100%" height="23" backgroundColor="#3e3e3e" horizontalGap="1">
 		<mx:ComboBox text="默认分组" height="23" width="100"/>
@@ -10,9 +11,11 @@
 		<view:SearchInput defaultClew="请输入查询关键词" height="23" width="100%"/>
 	</mx:HBox>
 	
-	<mx:DataGrid id="musicDg" width="100%" height="100%"
-		doubleClickEnabled="true" selectedIndex="{playListModel.selectedIndex}"
-		creationComplete="loadData()"
+	<mx:DataGrid id="musicDg" width="100%" height="100%" 
+		doubleClickEnabled="true"
+		verticalScrollPosition="{playListModel.verticalScrollPosition}" 
+		selectedIndex="{playListModel.selectedIndex}"
+		creationComplete="loadData()" 
 		nativeDragEnter="nativeDragEnterHandler(event)"
 		nativeDragDrop="nativeDragDropHandler(event)"
 	    itemDoubleClick="doubleClickHandler()">
@@ -23,6 +26,9 @@
 		</mx:columns>
 	</mx:DataGrid>
 	
+	<mx:Binding source="musicDg.maxVerticalScrollPosition" 
+				destination="playListModel.maxVerticalScrollPosition"/>
+		
 	<mx:Script>
 	<![CDATA[
 	
