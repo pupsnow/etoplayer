@@ -39,6 +39,8 @@ public class PlayListModel extends EventDispatcher implements IEventDispatcherMo
 	//
 	//--------------------------------------------------------------------------
 	
+	[Bindable]
+	public var maxVerticalScrollPosition:Number = 0;
 	//------------------------------
 	//	dataProvider
 	//------------------------------
@@ -46,13 +48,26 @@ public class PlayListModel extends EventDispatcher implements IEventDispatcherMo
 	public var dataProvider:XMLListCollection
 	
 	//------------------------------
+	//	verticalScrollPosition
+	//------------------------------
+	private var _verticalScrollPosition:int = 0;
+
+	[Bindable(event="selectedItemChange")]
+	public function get verticalScrollPosition():int
+	{
+		return _selectedIndex >= 0 ? _selectedIndex : 0;
+	}
+	
+	//------------------------------
 	//	selectedIndex
 	//------------------------------
-
+	
+	private var _selectedIndex:int = -1;
+	
 	[Bindable(event="selectedItemChange")]
 	public function get selectedIndex():int
 	{
-		return dataProvider.getItemIndex(selectedItem);
+		return _selectedIndex;
 	}
 	
 	//------------------------------
@@ -75,6 +90,10 @@ public class PlayListModel extends EventDispatcher implements IEventDispatcherMo
 		}
 		
 		_selectedItem = item;
+		_selectedIndex = dataProvider.getItemIndex(selectedItem);
+		_verticalScrollPosition = Math.max(0,_selectedIndex);
+		_verticalScrollPosition = Math.min(maxVerticalScrollPosition,_selectedIndex)
+		
 		dispatchEvent(new Event("selectedItemChange"));
 	}
 	
