@@ -3,42 +3,93 @@
 	xmlns:control="com.eto.etoplayer.control.*" titleBarColors="[0x555555,0x333333]"
 	xmlns:business="com.eto.etoplayer.business.*"
 	xmlns:view="com.eto.etoplayer.view.*" cornerRadius="0"
-	title="etoplayer" titleIcon="@Embed(source='assets/logo.png')"
+	title="etoplayer Alpha 0.4" titleIcon="@Embed(source='assets/logo.png')"
 	layout="horizontal" showStatusBar="false" horizontalGap="0"
 	horizontalAlign="center" verticalAlign="middle"
 	modalTransparencyBlur="0" modalTransparency="0.2" modalTransparencyDuration="250"
 	paddingLeft="0" paddingRight="0" paddingBottom="0" paddingTop="0"
-    initialize="init()" borderColor="0x000000"
-	creationComplete="creationCompleteHandle()" headerHeight="25">
+    initialize="init()" borderColor="0x000000" closing="applicationClose(event)"
+	creationComplete="creationCompleteHandle()" 
+	headerHeight="25">
 	  
 	<mx:Script>
-   		<![CDATA[
+   	<![CDATA[
+   		import com.eto.etoplayer.events.LoadUserConfigEvent;
+   		//import com.eto.etoplayer.util.MP3ID3Util;
+   	    //import mx.core.SoundAsset
+   		import com.eto.etoplayer.events.VersionUpdateEvent;
+   		import com.adobe.cairngorm.control.CairngormEventDispatcher;
    		
-	
-   			import com.eto.etoplayer.events.LoadUserConfigEvent;
-   			//import com.eto.etoplayer.util.MP3ID3Util;
-   		    //import mx.core.SoundAsset
-   			import com.eto.etoplayer.events.VersionUpdateEvent;
-   			import com.adobe.cairngorm.control.CairngormEventDispatcher;
+   		private function init():void
+   		{
    			
-   			private function init():void
-   			{
-   				//new MP3ID3Util
-   				//MP3ID3Util.read(null);
-   				//SoundAsset().
-   				//flash.system.System.useCodePage=true;
-   			}
-
-   			private function creationCompleteHandle():void
-   			{
-   				var event:VersionUpdateEvent = new VersionUpdateEvent();
-				CairngormEventDispatcher.getInstance().dispatchEvent(event);
-				
-				var configEvent:LoadUserConfigEvent = new LoadUserConfigEvent();
-				CairngormEventDispatcher.getInstance().dispatchEvent(configEvent);
-   			}
-   			
-   		]]>
+		}
+		
+		private function applicationClose(event:Event):void
+		{
+			trace("ri");
+			event.preventDefault();
+			trace("ri");
+			this.visible =false;
+			//this.addEventListener(
+		}
+   		private function creationCompleteHandle():void
+   		{
+   			//stage.nativeWindow.addEventListener(Event.CLOSE,applicationClose);
+   			var event:VersionUpdateEvent = new VersionUpdateEvent();
+			CairngormEventDispatcher.getInstance().dispatchEvent(event);
+			
+			var configEvent:LoadUserConfigEvent = new LoadUserConfigEvent();
+			CairngormEventDispatcher.getInstance().dispatchEvent(configEvent);
+			
+			 showTrayIcon();
+   		}
+   		
+   		private function showTrayIcon():void
+   		{
+   			var iconLoader:Loader = new Loader();
+   			iconLoader.contentLoaderInfo.addEventListener(Event.COMPLETE,
+   											iconLoaderCompleteHanler);
+   			iconLoader.load(new URLRequest("assets/logo_16.png"));
+   		}
+   		
+   		private function iconLoaderCompleteHanler(event:Event):void
+   		{
+   			var bitmaps:Array = [event.target.content.bitmapData];
+   			createTrayIcon(bitmaps);
+   		}
+   		
+   		private function createTrayIcon(bitmaps:Array):void
+   		{
+   			NativeApplication.nativeApplication.icon.bitmaps = bitmaps
+   											
+   			setIcomProperty();								
+   		}
+   		
+   		private function setIcomProperty():void
+   		{
+   			var iconMenu:NativeMenu = new NativeMenu();
+			var exitCommand:NativeMenuItem = 
+								iconMenu.addItem(new NativeMenuItem("Exit"));
+			exitCommand.addEventListener(Event.SELECT,
+					function(event:Event):void 
+					{
+						NativeApplication.nativeApplication.icon.bitmaps = [];
+						NativeApplication.nativeApplication.exit();
+					}
+				);
+			var systray:SystemTrayIcon = 
+					NativeApplication.nativeApplication.icon as SystemTrayIcon;
+			systray.tooltip = "etoplayer";
+			systray.menu = iconMenu;
+			systray.addEventListener(ScreenMouseEvent.CLICK,activeWindow);
+   		}
+   		
+   		private function activeWindow(event:ScreenMouseEvent):void
+   		{
+   			this.visible = true;
+   		}
+   	]]>
    	</mx:Script>
    	
    	<mx:XMLList xmlns="">

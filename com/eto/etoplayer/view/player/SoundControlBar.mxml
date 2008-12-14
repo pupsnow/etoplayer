@@ -6,118 +6,127 @@
 	currentState="{playerModel.mediaFacade.currentState}"
 	initialize="initComponent()">
 	
-	<mx:Script>
-		<![CDATA[
-			import com.eto.etoplayer.vo.MP3Info;
-			import com.eto.etoplayer.model.PlayListModel;
-			import com.eto.etoplayer.states.PlayState;
-			import com.eto.etoplayer.interfaces.IMediaFacade;
-			import com.eto.etoplayer.core.SoundFacade;
-			import com.eto.etoplayer.events.SoundStopEvent;
-			import mx.controls.listClasses.ListBase;
-			import com.eto.etoplayer.events.VolumeChangeEvent;
-			import com.eto.etoplayer.model.PlayModel;
-			import com.adobe.cairngorm.control.CairngormEventDispatcher;
-			import com.eto.etoplayer.events.SoundPlayEvent;
+<mx:Script>
+	<![CDATA[
+		import com.eto.etoplayer.vo.MP3Info;
+		import com.eto.etoplayer.model.PlayListModel;
+		import com.eto.etoplayer.states.PlayState;
+		import com.eto.etoplayer.interfaces.IMediaFacade;
+		import com.eto.etoplayer.core.SoundFacade;
+		import com.eto.etoplayer.events.SoundStopEvent;
+		import mx.controls.listClasses.ListBase;
+		import com.eto.etoplayer.events.VolumeChangeEvent;
+		import com.eto.etoplayer.model.PlayModel;
+		import com.adobe.cairngorm.control.CairngormEventDispatcher;
+		import com.eto.etoplayer.events.SoundPlayEvent;
+		
+		[Bindable]
+		private var playerModel:PlayModel = PlayModel.getInstance();
+		
+		private function initComponent():void
+		{
+			//playerModel.playControlBar = this;
+		}
+		
+		public function playControl():void
+		{
+			var mediaFacade:IMediaFacade = PlayModel.getInstance().mediaFacade;
 			
-			[Bindable]
-			private var playerModel:PlayModel = PlayModel.getInstance();
-			
-			private function initComponent():void
+			if(this.currentState == PlayState.READY_TO_PLAY ||
+			   this.currentState == null || 
+			   this.currentState == "")
 			{
-				//playerModel.playControlBar = this;
-			}
-			
-			public function playControl():void
+				play();
+			}	
+			else if(this.currentState == PlayState.PLAYING)
 			{
-				var mediaFacade:IMediaFacade = PlayModel.getInstance().mediaFacade;
-				
-				if(this.currentState == PlayState.READY_TO_PLAY ||
-				   this.currentState == null || 
-				   this.currentState == "")
-				{
-					play();
-				}	
-				else if(this.currentState == PlayState.PLAYING)
-				{
-					mediaFacade.pause();
-					this.currentState = PlayState.PAUSE;
-				}	
-				else if(this.currentState == PlayState.PAUSE)
-				{
-					mediaFacade.resume();
-					this.currentState = PlayState.PLAYING;
-				}
+				mediaFacade.pause();
+				this.currentState = PlayState.PAUSE;
+			}	
+			else if(this.currentState == PlayState.PAUSE)
+			{
+				mediaFacade.resume();
+				this.currentState = PlayState.PLAYING;
 			}
-			
-			private function play():void
+		}
+		
+		private function play():void
+		{
+			var item:Object = playerModel.playListModel.selectedItem;
+			if(item)
 			{
 				var mp3Info:MP3Info = 
-							new MP3Info(playerModel.playListModel.selectedItem);
-				var event:SoundPlayEvent = new SoundPlayEvent();
-					event.url = mp3Info.url;
-					CairngormEventDispatcher.getInstance().dispatchEvent(event);
-			}
-			
-			private function stop():void
-			{
-				var event:SoundStopEvent = new SoundStopEvent();
+						new MP3Info(playerModel.playListModel.selectedItem);
+				var event:SoundPlayEvent = new SoundPlayEvent(mp3Info);
 				CairngormEventDispatcher.getInstance().dispatchEvent(event);
 			}
-			
-			private function next():void
-			{
-				var listModel:PlayListModel = PlayModel.getInstance().playListModel;
-				
-				if(listModel.selectedIndex+1 > listModel.dataProvider.length)
-				 	return ;
-				 	
-				listModel.setSelectedItem(listModel.dataProvider[listModel.selectedIndex + 1]);
-				play();
-			}
-			
-			private function priv():void
-			{
-				var listModel:PlayListModel = PlayModel.getInstance().playListModel;
-				
-				if(listModel.selectedIndex == 0)
-					return ;
-					
-				listModel.setSelectedItem(listModel.dataProvider[listModel.selectedIndex - 1]);
-				play();
-			}
-			
-			/**
-			*改变音量
-			**/
-			private function changeVolume():void
-			{
-				var event:VolumeChangeEvent = new VolumeChangeEvent();
-				event.value = hs.value;
-				CairngormEventDispatcher.getInstance().dispatchEvent(event);
-			}
-			
-		]]>
-	</mx:Script>
-	
-	<mx:states>
-		<mx:State name="{PlayState.READY_TO_PLAY}"/>
+		}
 		
-		<mx:State name="{PlayState.PLAYING}">
-			<mx:SetProperty target="{playbt}" name="label" value="暂停"/>
-		</mx:State>
+		private function stop():void
+		{
+			var event:SoundStopEvent = new SoundStopEvent();
+			CairngormEventDispatcher.getInstance().dispatchEvent(event);
+		}
 		
-		<mx:State name="{PlayState.PAUSE}">
-			<mx:SetProperty target="{playbt}" name="label" value="继续播放"/>
-		</mx:State>
-	</mx:states>
-	
-	<mx:LinkButton label="上一首" click="priv()" width="60" height="20"/>
-	<mx:LinkButton id="playbt" label="播放" click="playControl()" width="50" height="20"/>
-	<mx:LinkButton label="停止" click="stop()" width="60" height="20"/>
-	<mx:LinkButton label="下一首" click="next()" width="60" height="20"/>
+		private function next():void
+		{
+			var listModel:PlayListModel = PlayModel.getInstance().playListModel;
+			
+			if(listModel.selectedIndex+1 > listModel.dataProvider.length)
+			 	return ;
+			 	
+			listModel.setSelectedItem(listModel.dataProvider[listModel.selectedIndex + 1]);
+			play();
+		}
+		
+		private function priv():void
+		{
+			var listModel:PlayListModel = PlayModel.getInstance().playListModel;
+			
+			if(listModel.selectedIndex == 0)
+				return ;
+				
+			listModel.setSelectedItem(listModel.dataProvider[listModel.selectedIndex - 1]);
+			play();
+		}
+		
+		private var changeByThumb:Boolean = false;
+		/**
+		*改变音量
+		**/
+		private function changeVolume():void
+		{
+			var event:VolumeChangeEvent = 
+								new VolumeChangeEvent(hs.value,!changeByThumb);
+			CairngormEventDispatcher.getInstance().dispatchEvent(event);
+		}
+		
+	]]>
+</mx:Script>
 
-	<mx:Label text="音量:"/>
-	<mx:HSlider id="hs" liveDragging="true" minimum="0" value="0.8" 
-			maximum="1" change="changeVolume()" width="50"/>
+<mx:states>
+	<mx:State name="{PlayState.READY_TO_PLAY}"/>
+	
+	<mx:State name="{PlayState.PLAYING}">
+		<mx:SetProperty target="{playbt}" name="label" value="暂停"/>
+	</mx:State>
+	
+	<mx:State name="{PlayState.PAUSE}">
+		<mx:SetProperty target="{playbt}" name="label" value="继续播放"/>
+	</mx:State>
+</mx:states>
+
+<mx:LinkButton label="上一首" click="priv()" width="60" height="20"/>
+<mx:LinkButton id="playbt" label="播放" click="playControl()" width="50" height="20"/>
+<mx:LinkButton label="停止" click="stop()" width="60" height="20"/>
+<mx:LinkButton label="下一首" click="next()" width="60" height="20"/>
+
+<mx:Label text="音量:"/>
+<mx:HSlider id="hs" width="50"
+	    liveDragging="true" 
+	    value="{playerModel.volume}" minimum="0" maximum="1" 
+		change="changeVolume()" 
+		thumbPress="changeByThumb = true"
+		thumbRelease="changeByThumb = false;changeVolume()"/>
+		
 </mx:HBox>

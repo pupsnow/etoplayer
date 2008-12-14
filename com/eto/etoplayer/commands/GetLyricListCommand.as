@@ -32,7 +32,7 @@ package com.eto.etoplayer.commands
 		override public function execute(event:CairngormEvent):void
 		{
 			var getEvent:GetLyricListEvent = GetLyricListEvent(event);
-			mp3Info = getEvent.mp3Info;
+			mp3Info = PlayModel.getInstance().playItem;
 			
 			var localLyricURL:String = LocalFilePath.lyricFolder + 
 				"\\" + LyricUtil.getRuleFileName(mp3Info.title,mp3Info.artist);

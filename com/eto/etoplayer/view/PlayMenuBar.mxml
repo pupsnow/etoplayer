@@ -7,9 +7,10 @@
 
 	<mx:Script>
 	<![CDATA[
+		import com.eto.etoplayer.events.dataEvents.ApplicationEvent;
 		import com.eto.etoplayer.events.PlayListSortEvent;
 	import com.eto.etoplayer.core.UserConfig;
-	import com.eto.etoplayer.events.SaveUserConfigEvent;
+	import com.eto.etoplayer.events.ChoosePlayParttenEvent;
 	import com.eto.etoplayer.events.SelectFileToPlayListEvent;
 	import com.eto.etoplayer.model.PlayListModel;
 	import com.eto.etoplayer.model.PlayModel;
@@ -28,7 +29,7 @@
 	private function initCompoment():void
 	{
 		disPatcher.addEventListener(
-			ApplicationDispatcher.USER_CONFIG_COMPLETE,configCompleteHandler);
+			ApplicationEvent.USER_CONFIG_COMPLETE,configCompleteHandler);
 	}
 	
 	private function configCompleteHandler(event:Event):void
@@ -36,7 +37,7 @@
 		loadMenuData();
 		
 		disPatcher.removeEventListener(
-			ApplicationDispatcher.USER_CONFIG_COMPLETE,configCompleteHandler);
+			ApplicationEvent.USER_CONFIG_COMPLETE,configCompleteHandler);
 	} 
 	private function loadMenuData():void
 	{
@@ -93,8 +94,8 @@
 	}
 	private function playPatternChoose(item:Object):void
 	{
-		var event:SaveUserConfigEvent = new SaveUserConfigEvent();
-		UserConfig.playPattern = item.@pattern;
+		var pt:String = item.@pattern;
+		var event:ChoosePlayParttenEvent = new ChoosePlayParttenEvent(pt);
 		CairngormEventDispatcher.getInstance().dispatchEvent(event);
 	}
 	

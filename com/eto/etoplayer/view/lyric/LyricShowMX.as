@@ -4,7 +4,6 @@ import com.adobe.cairngorm.control.CairngormEventDispatcher;
 import com.eto.etoplayer.events.ClipboardToPlayListEvent;
 import com.eto.etoplayer.events.GetLyricListEvent;
 import com.eto.etoplayer.events.SoundPlayEvent;
-import com.eto.etoplayer.interfaces.IMediaFacade;
 import com.eto.etoplayer.model.PlayModel;
 import com.eto.etoplayer.vo.MP3Info;
 
@@ -123,9 +122,9 @@ public class LyricShowMX extends UIComponent
 	
 	private function positionChange(event:PositionChangeEvent):void
 	{
-		var mediaFacade:IMediaFacade = PlayModel.getInstance().mediaFacade;
+		var item:MP3Info = PlayModel.getInstance().playItem
 		
-		var playEvent:SoundPlayEvent = new SoundPlayEvent(mediaFacade.url);
+		var playEvent:SoundPlayEvent = new SoundPlayEvent(item);
 		playEvent.position = event.newPosition;
 		CairngormEventDispatcher.getInstance().dispatchEvent(playEvent);
 	}

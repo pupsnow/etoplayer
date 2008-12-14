@@ -83,6 +83,7 @@ package com.eto.etoplayer.view
 		public function SearchInput()
 		{
 			super();
+			//addEventListener(KeyboardEvent.KEY_DOWN,keyDownHandler)
 		}
 		
 		//--------------------------------------
@@ -325,6 +326,13 @@ package com.eto.etoplayer.view
 			measureComponent()
 		}
 		
+		/* private function keyDownHandler(event:KeyboardEvent):void
+		{
+			if(event.keyCode == Keyboard.ENTER)
+			{
+				dispatchEvent(new Event("enter"))
+			}
+		} */
 		
 		/**
 		 * @private

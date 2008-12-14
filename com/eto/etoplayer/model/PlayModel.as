@@ -1,10 +1,12 @@
 package com.eto.etoplayer.model
 {
 import com.adobe.cairngorm.control.CairngormEventDispatcher;
+import com.eto.etoplayer.core.ApplicationDispatcher;
 import com.eto.etoplayer.core.SoundFacade;
 import com.eto.etoplayer.core.UserConfig;
 import com.eto.etoplayer.events.GetLyricListEvent;
 import com.eto.etoplayer.events.SoundPlayEvent;
+import com.eto.etoplayer.events.dataEvents.ApplicationEvent;
 import com.eto.etoplayer.interfaces.IMediaFacade;
 import com.eto.etoplayer.interfaces.IModelInstance;
 import com.eto.etoplayer.interfaces.IPlayModel;
@@ -41,8 +43,31 @@ public class PlayModel extends EventDispatcher implements IModelInstance, IPlayM
 	{
 		super();
 		
-		setMediaFacade(new SoundFacade());
+		var sf:SoundFacade = new SoundFacade();
+		setMediaFacade(sf);
+		volumeRead();
+		appDispatcher.addEventListener(
+							ApplicationEvent.USER_CONFIG_COMPLETE,volumeRead);
+		
+		
 	}
+	
+	private function volumeRead(event:ApplicationEvent = null):void
+	{
+		trace("volumeRead");
+		volume = Number(UserConfig.volume);
+		
+	}
+	//--------------------------------------------------------------------------
+	//
+	//		variable
+	//		
+	//--------------------------------------------------------------------------
+	
+	private var appDispatcher:ApplicationDispatcher = 
+											ApplicationDispatcher.getInstance();
+	
+	private var playURLChange:Boolean = true;
 	
 	//---------------------------------------------
 	//		Instance
@@ -105,7 +130,6 @@ public class PlayModel extends EventDispatcher implements IModelInstance, IPlayM
 		if(!_playListModel)
 		{
 			_playListModel = new PlayListModel();
-			_playListModel.addEventListener("selectedItemChange",setTitle);
 		}
 		
 		return _playListModel;
@@ -123,16 +147,70 @@ public class PlayModel extends EventDispatcher implements IModelInstance, IPlayM
 		return _title;
 	}
 	
-	private function setTitle(event:Event):void
+	private function setTitle():void
 	{
-		var item:MP3Info = new MP3Info(_playListModel.selectedItem);
-		_title = item.title + "(" +item.artist + ")";
+		var item:MP3Info = playItem;
+		_title = titleFormat(item);
+		
 		dispatchEvent(new Event("titleChange"));
 	}
 	
-	//---------------------------------------------
+	private function titleFormat(item:MP3Info):String
+	{
+		var __title:String = item.title;
+		if(item.artist && item.artist != "")
+		{
+			__title += "(" +item.artist + ")";
+		}
+		return __title;
+	}
+	
+	//------------------------------
+	//		volume
+	//------------------------------
+	[Bindable(event="volumeChange")]
+	public function get volume():Number
+	{
+		trace(mediaFacade.volume+"");
+		return mediaFacade.volume;
+	}
+	
+	public function set volume(vol:Number):void
+	{
+		trace("set:"+vol);
+		mediaFacade.volume = vol;
+		dispatchEvent(new Event("volumeChange"));
+	}
+	//------------------------------
+	//	playItem
+	//------------------------------
+	
+	private var _playItem:MP3Info
+	
+	[Bindable(event="playItemChange")]
+	public function get playItem():MP3Info
+	{
+		return _playItem;
+	}
+	
+	public function set playItem(item:MP3Info):void
+	{
+		if(item == _playItem)
+		{
+			return ;
+		}
+		
+		_playItem = item;
+		playURLChange = true;
+		
+		dispatchEvent(new Event("playItemChange"));
+		
+		setTitle();
+	}
+	
+	//------------------------------
 	//		progressBar
-	//---------------------------------------------
+	//------------------------------
 	
 	private var progressBar:IPlayProgressBar;
 	
@@ -141,9 +219,36 @@ public class PlayModel extends EventDispatcher implements IModelInstance, IPlayM
 		progressBar = bar;
 	} 
 	
-	//---------------------------------------------
+	//--------------------------------------------------------------------------
+	//
+	//		public method
+	//		
+	//--------------------------------------------------------------------------
+	
+	/**
+	 * 
+	 * @param position
+	 * 
+	 */	
+	public function play(position:int = 0):void
+	{
+		if(playURLChange)
+		{
+			mediaFacade.load(playItem.url);
+		}
+		else
+		{
+			mediaFacade.play(position)
+		}
+		
+		playURLChange = false;
+	}
+	//--------------------------------------------------------------------------
+	//
 	//		event handler
-	//---------------------------------------------
+	//		
+	//--------------------------------------------------------------------------
+	
 	/**
 	 * @private
 	 */
@@ -156,9 +261,9 @@ public class PlayModel extends EventDispatcher implements IModelInstance, IPlayM
 			progressBar.setPlayProgress(0,0);
 		}
 		
-		var mp3InfoVO:MP3Info = new MP3Info(playListModel.selectedItem);
+		//var mp3InfoVO:MP3Info = playItem;
 		var getEvent:GetLyricListEvent = 
-							new GetLyricListEvent(mp3InfoVO);
+							new GetLyricListEvent();
 		CairngormEventDispatcher.getInstance().dispatchEvent(getEvent);
 	}
 	 
@@ -215,7 +320,7 @@ public class PlayModel extends EventDispatcher implements IModelInstance, IPlayM
 			     break;
 			     
 			case PlayPattern.ORDERLY_ROUND :
-				 if(playListModel.selectedIndex+1 <= playListModel.dataProvider.length)
+				 if(playListModel.selectedIndex+1 < playListModel.dataProvider.length)
 				 {
 					 index = playListModel.selectedIndex + 1
 				 }
@@ -223,13 +328,14 @@ public class PlayModel extends EventDispatcher implements IModelInstance, IPlayM
 				 {
 				 	index = 0;
 				 } 
+				 trace(index);
 				 break;
 				 
 			case PlayPattern.RANDOM : 
 				 index = Random.range(playListModel.dataProvider.length -1,-1)
 				 break;
 		}
-		if(index > 0)
+		if(index >= 0)
 		{
 			playNext(index)
 		}
@@ -237,9 +343,10 @@ public class PlayModel extends EventDispatcher implements IModelInstance, IPlayM
 	
 	private function playNext(index:int):void
 	{
-		playListModel.setSelectedItem(playListModel.dataProvider[index]);
-		var mp3Info:MP3Info = new MP3Info(playListModel.selectedItem);
-		var event:SoundPlayEvent = new SoundPlayEvent(mp3Info.url);
+		var item:Object = playListModel.dataProvider[index];
+		playListModel.setSelectedItem(item,true);
+		var mp3Info:MP3Info = new MP3Info(item);
+		var event:SoundPlayEvent = new SoundPlayEvent(mp3Info);
 		CairngormEventDispatcher.getInstance().dispatchEvent(event);
 	}
 }

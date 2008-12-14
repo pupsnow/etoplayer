@@ -1,5 +1,7 @@
 package com.eto.etoplayer.core
 {
+	import com.eto.etoplayer.events.dataEvents.ApplicationEvent;
+	import com.eto.etoplayer.filesystem.TextFile;
 	import com.eto.etoplayer.states.PlayPattern;
 	
 	import flash.events.Event;
@@ -24,10 +26,12 @@ public class UserConfig extends EventDispatcher
 	
 	private static function setConfigXML(xml:XML):void
 	{
-		playPattern = xml.playsets.playpattern;
+		var playsets:Object = xml.playsets;
+		playPattern = playsets.playpattern;
+		volume = Number(playsets.volume);
 		
-		var event:Event = 
-					new Event(ApplicationDispatcher.USER_CONFIG_COMPLETE);
+		var event:ApplicationEvent = 
+					new ApplicationEvent(ApplicationEvent.USER_CONFIG_COMPLETE);
 		ApplicationDispatcher.getInstance().dispatchEvent(event);
 	}
 	
@@ -46,17 +50,38 @@ public class UserConfig extends EventDispatcher
 		_playPattern = pattern;
 	}
 	
+	//------------------------------
+	//	  volume
+	//------------------------------
+	
+	private static var _volume:Number = 0.8;
+	
+	public static function get volume():Number
+	{
+		return _volume;
+	}
+	public static function set volume(vol:Number):void
+	{
+		_volume = vol;
+	}
+	
 	//--------------------------------------------------------------------------
 	//
 	//	  		method
 	//
 	//--------------------------------------------------------------------------
+	public static function save():void
+	{
+		var textFile:TextFile = new TextFile(LocalFilePath.userConfig);
+		textFile.write(toXMLString());
+	}
 	
 	public static function toXMLString():String
 	{
 		var xmlString:String = "<user>";
 		xmlString += "<playsets>";
 		xmlString += "<playpattern>"+ playPattern +"</playpattern>"
+		xmlString += "<volume>"+ volume +"</volume>"
 		xmlString += "</playsets>";
 		xmlString += "</user>"
 		return xmlString;

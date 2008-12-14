@@ -45,5 +45,22 @@ package com.eto.etoplayer.vo
 			var xml:XML = <item title={title} album={album} artist={artist} year={year} genre={genre} url={url}/>;
 			return xml;
 		}
+		
+		public function indexOf(str:String):int
+		{
+			var tix:int = title.toLowerCase().indexOf(str);
+			if(tix!= -1)
+			{
+				return tix;
+			}
+			
+			tix = artist.toLowerCase().indexOf(str);
+			if(tix!= -1)
+			{
+				return tix;
+			}
+			
+			return -1
+		}
 	}
 }

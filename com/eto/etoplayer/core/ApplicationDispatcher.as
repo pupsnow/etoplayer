@@ -2,7 +2,7 @@ package com.eto.etoplayer.core
 {
 import flash.events.EventDispatcher;
 
-[Event(name="userConfigComplete", type="flash.events.Event")]
+[Event(name="userConfigComplete", type="com.eto.etoplayer.events.dataEvents.ApplicationEvent")]
 
 public class ApplicationDispatcher extends EventDispatcher
 {
@@ -18,7 +18,7 @@ public class ApplicationDispatcher extends EventDispatcher
 		return _instance;
 	}
 	
-	public static const USER_CONFIG_COMPLETE:String = "userConfigComplete";
+	
 	
 	public function ApplicationDispatcher()
 	{

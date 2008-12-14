@@ -25,7 +25,8 @@ public class ApplicationController extends FrontController
 		//---------------------------------------------------------------
 		
 		addCommand(LoadUserConfigEvent.LOAD_USER_CONFIG,LoadUserConfigCommand);
-		addCommand(SaveUserConfigEvent.SAVE_USER_CONFIG,SaveUserConfigCommand);
+		addCommand(ChoosePlayParttenEvent.CHOOSE_PLAY_PARTTEN,
+													ChoosePlayPatternCommand);
 		
 		//---------------------------------------------------------------
 		//					play control
@@ -58,6 +59,7 @@ public class ApplicationController extends FrontController
 		addCommand(ClipboardToPlayListEvent.CLIPBOARD_TO_PLAYLIST,
 												 ClipboardToPlayListCommand);
 		addCommand(PlayListSortEvent.PLAY_LIST_SORT,PlayListSortCommand);
+		addCommand(SearchPlayListEvent.SEARCH_PLAY_LIST,SearchPlayListCommand);
 	}
 }
 }
