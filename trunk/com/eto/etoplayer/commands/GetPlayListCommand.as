@@ -23,9 +23,13 @@ package com.eto.etoplayer.commands
 		{
 			var favoritesFile:TextFile = new TextFile(LocalFilePath.favoritesPath);
 			var source:String = favoritesFile.read();
+			if(source == "" ||source == null)
+			{
+				return ;
+			}
 			var xmllist:XMLList = new XMLList(source);
-			playListModel.setSelectedItem(xmllist[0]);
 			playListModel.dataProvider.source = new XMLList(source);
+			playListModel.setSelectedItem(playListModel.dataProvider[0]);
 		}
 		
 	}

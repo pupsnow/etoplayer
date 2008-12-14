@@ -2,22 +2,26 @@
 <mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml"
 	title="音乐收藏" width="324" height="100%" verticalGap="0" 
 	xmlns:view="com.eto.etoplayer.view.*">
-	
-	
+				
 	<view:PlayMenuBar/>
+	
 	<mx:HBox width="100%" height="23" backgroundColor="#3e3e3e" horizontalGap="1">
-		<mx:ComboBox text="默认分组" height="23" width="100"/>
-		<mx:VRule height="100%"/>
-		<view:SearchInput defaultClew="请输入查询关键词" height="23" width="100%"/>
+		<!--<mx:ComboBox text="默认分组" height="23" width="100"/>
+		<mx:VRule height="100%"/>-->
+		<view:SearchInput id="searchInput" width="100%" height="23"
+			defaultClew="请输入查询关键词" 
+			excute="searchExcute()"/>
 	</mx:HBox>
 	
-	<mx:DataGrid id="musicDg" width="100%" height="100%" 
-		doubleClickEnabled="true"
-		verticalScrollPosition="{playListModel.verticalScrollPosition}" 
+	<mx:DataGrid id="musicDg" width="100%" height="100%"
+		doubleClickEnabled="true" sortableColumns="false"
+		verticalScrollPosition="{playListModel.verticalScrollPosition}"
 		selectedIndex="{playListModel.selectedIndex}"
-		creationComplete="loadData()" 
+		creationComplete="musicDgCreationCompleteHandler()"
+		updateComplete="musicDgUpdateCompleteHandler()"
 		nativeDragEnter="nativeDragEnterHandler(event)"
 		nativeDragDrop="nativeDragDropHandler(event)"
+		change = "dgItemChange()"
 	    itemDoubleClick="doubleClickHandler()">
 		<mx:columns>
 			<mx:DataGridColumn width="200" 
@@ -26,11 +30,12 @@
 		</mx:columns>
 	</mx:DataGrid>
 	
-	<mx:Binding source="musicDg.maxVerticalScrollPosition" 
-				destination="playListModel.maxVerticalScrollPosition"/>
-		
+	
+				
 	<mx:Script>
 	<![CDATA[
+		import com.eto.etoplayer.events.SearchPlayListEvent;
+		import com.eto.etoplayer.vo.MP3Info;
 	
 		import com.eto.etoplayer.events.ClipboardToPlayListEvent;
 		import com.eto.etoplayer.events.GetPlayListEvent;
@@ -61,20 +66,44 @@
 		[Bindable]
 		private var playListModel:PlayListModel = PlayModel.getInstance().playListModel;
 		
-		private function loadData():void
+		private function musicDgCreationCompleteHandler():void
 		{
 			musicDg.dataProvider = playListModel.dataProvider;
 			
+			loadData();
+		}
+		
+		private function musicDgUpdateCompleteHandler():void
+		{
+			//trace(musicDg.maxHorizontalScrollPosition);
+			playListModel.maxVerticalScrollPosition = 
+									musicDg.maxVerticalScrollPosition;
+		}
+		
+		private function loadData():void
+		{
 			var event:GetPlayListEvent = new GetPlayListEvent();
 			CairngormEventDispatcher.getInstance().dispatchEvent(event);
-			musicDg.selectedIndex = 0;
+		}
+		
+		private function searchExcute():void
+		{
+			musicDg.maxVerticalScrollPosition = 1;
+			var event:SearchPlayListEvent = 
+									new SearchPlayListEvent(searchInput.text);
+			CairngormEventDispatcher.getInstance().dispatchEvent(event);
+		}
+		
+		private function dgItemChange():void
+		{
+			playListModel.setSelectedItem(musicDg.selectedItem);
 		}
 		
 		private function doubleClickHandler():void
 		{
-			var item:Object = musicDg.selectedItem;
+			var item:MP3Info = new MP3Info(musicDg.selectedItem);
 			
-			var event:SoundPlayEvent = new SoundPlayEvent(item.@url,item);
+			var event:SoundPlayEvent = new SoundPlayEvent(item);
 			CairngormEventDispatcher.getInstance().dispatchEvent(event);
 		}
 		

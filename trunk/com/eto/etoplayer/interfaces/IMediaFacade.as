@@ -19,5 +19,9 @@ package com.eto.etoplayer.interfaces
 		function get displayTime():String
 		
 		function get currentState():String
+		
+		function set volume(vol:Number):void
+		
+		function get volume():Number;
 	}
 }

@@ -22,7 +22,7 @@ package com.eto.etoplayer.events
 			return _strongSearch;
 		}
 		
-		public function GetLyricListEvent(mp3Info:MP3Info,strongSearch:Boolean = false)
+		public function GetLyricListEvent(mp3Info:MP3Info = null,strongSearch:Boolean = false)
 		{
 			super(GET_LRC_LIST);
 			

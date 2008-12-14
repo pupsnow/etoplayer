@@ -8,6 +8,7 @@ package com.eto.etoplayer.view.player
 	import com.eto.etoplayer.view.player.playProgressBar.LoadSkin;
 	import com.eto.etoplayer.view.player.playProgressBar.PlayProgressSkin;
 	import com.eto.etoplayer.view.player.playProgressBar.PlayProgressTrackSkin;
+	import com.eto.etoplayer.vo.MP3Info;
 	
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
@@ -198,8 +199,8 @@ package com.eto.etoplayer.view.player
 			_playBar.updateDisplayList(mouseX,3);
 			
 			var changepg:Number = mouseX * _playTotal / this.width;
-			var playEvent:SoundPlayEvent = new SoundPlayEvent();
-				playEvent.url = PlayModel.getInstance().mediaFacade.url;
+			var playItem:MP3Info = PlayModel.getInstance().playItem;
+			var playEvent:SoundPlayEvent = new SoundPlayEvent(playItem);
 				playEvent.position = changepg;
 			CairngormEventDispatcher.getInstance().dispatchEvent(playEvent);
 

@@ -40,7 +40,7 @@ public class PlayListModel extends EventDispatcher implements IEventDispatcherMo
 	//--------------------------------------------------------------------------
 	
 	[Bindable]
-	public var maxVerticalScrollPosition:Number = 0;
+	public var maxVerticalScrollPosition:Number
 	//------------------------------
 	//	dataProvider
 	//------------------------------
@@ -52,10 +52,11 @@ public class PlayListModel extends EventDispatcher implements IEventDispatcherMo
 	//------------------------------
 	private var _verticalScrollPosition:int = 0;
 
-	[Bindable(event="selectedItemChange")]
+	[Bindable(event="verticalScrollPositionChange")]
 	public function get verticalScrollPosition():int
 	{
-		return _selectedIndex >= 0 ? _selectedIndex : 0;
+		//trace(_verticalScrollPosition);
+		return _verticalScrollPosition;
 	}
 	
 	//------------------------------
@@ -82,19 +83,28 @@ public class PlayListModel extends EventDispatcher implements IEventDispatcherMo
 		return _selectedItem;
 	}
 	
-	public function setSelectedItem(item:Object):void
+	public function setSelectedItem(item:Object, autoPosition:Boolean = false, ignoreIsEqual:Boolean = false):void
 	{
-		if(_selectedItem == item)
+		if(_selectedItem == item && !ignoreIsEqual)
 		{
 			return;
 		}
 		
 		_selectedItem = item;
 		_selectedIndex = dataProvider.getItemIndex(selectedItem);
-		_verticalScrollPosition = Math.max(0,_selectedIndex);
-		_verticalScrollPosition = Math.min(maxVerticalScrollPosition,_selectedIndex)
 		
 		dispatchEvent(new Event("selectedItemChange"));
+		
+		if(autoPosition)
+		{
+			_verticalScrollPosition = _selectedIndex - 3;
+			//trace(vsIndex + ":" + maxVerticalScrollPosition);
+			_verticalScrollPosition = Math.max(0,_verticalScrollPosition);
+			_verticalScrollPosition = Math.min(maxVerticalScrollPosition,
+														_verticalScrollPosition);
+			trace(_verticalScrollPosition);
+			dispatchEvent(new Event("verticalScrollPositionChange"));
+		}
 	}
 	
 	//--------------------------------------------------------------------------
@@ -158,10 +168,13 @@ public class PlayListModel extends EventDispatcher implements IEventDispatcherMo
 	/**
 	 * remove each of playlist item. 
 	 */		
-	public function removeAll():void
+	public function removeAll(clearSelectedItem:Boolean = true):void
 	{
 		dataProvider.removeAll();
-		setSelectedItem(null);
+		if(clearSelectedItem)
+		{
+			setSelectedItem(null);
+		}
 	}
 }
 }

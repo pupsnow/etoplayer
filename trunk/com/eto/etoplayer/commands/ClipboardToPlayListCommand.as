@@ -10,6 +10,7 @@ import com.eto.etoplayer.events.SoundPlayEvent;
 import com.eto.etoplayer.filesystem.TextFile;
 import com.eto.etoplayer.model.PlayListModel;
 import com.eto.etoplayer.model.PlayModel;
+import com.eto.etoplayer.vo.MP3Info;
 
 import flash.desktop.Clipboard;
 import flash.desktop.ClipboardFormats;
@@ -73,8 +74,10 @@ public class ClipboardToPlayListCommand implements ICommand
 	{
 		var playlistModel:PlayListModel = PlayModel.getInstance().playListModel;
 		var item:Object = playlistModel.dataProvider[0];
-		//var url:String = new 
-		var event:SoundPlayEvent = new SoundPlayEvent(item.@url,item);
+		
+		var playItem:MP3Info = new MP3Info(item)
+		var event:SoundPlayEvent = new SoundPlayEvent(playItem);
+		
 		CairngormEventDispatcher.getInstance().dispatchEvent(event);
 	}
 	

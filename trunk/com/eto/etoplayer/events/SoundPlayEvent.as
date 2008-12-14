@@ -1,6 +1,7 @@
 package com.eto.etoplayer.events
 {
 	import com.adobe.cairngorm.control.CairngormEvent;
+	import com.eto.etoplayer.vo.MP3Info;
 	
 	/**
 	 * 
@@ -14,26 +15,21 @@ package com.eto.etoplayer.events
 		 */		
 		public static const SOUND_PLAY:String = "soundPlay";
 		
-		/**
-		 * The URL of the sound file to load. 
-		 */		
-		public var url:String;
-		
 		public var position:Number = 0;
 		
-		private var _item:Object;
-		public function get item():Object
+		private var _item:MP3Info;
+		
+		public function get item():MP3Info
 		{
 			return _item
 		}
 		/**
 		 * Constructor.
 		 */
-		public function SoundPlayEvent(url:String = null,item:Object = null)
+		public function SoundPlayEvent(item:MP3Info,position:Number = 0)
 		{
-			if(url)
-				this.url = url;
-			_item = item;	
+			_item = item;
+			this.position = position	
 			super(SOUND_PLAY);
 		}
 		

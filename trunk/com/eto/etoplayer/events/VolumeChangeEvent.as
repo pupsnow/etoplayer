@@ -1,17 +1,32 @@
 package com.eto.etoplayer.events
 {
-	import com.adobe.cairngorm.control.CairngormEvent;
+import com.adobe.cairngorm.control.CairngormEvent;
 
-	public class VolumeChangeEvent extends CairngormEvent
+public class VolumeChangeEvent extends CairngormEvent
+{
+	public static const VOLUME_CHANGE:String = "VolumeChange";
+	
+	private var _value:Number = 0;
+	
+	public function get value():Number
 	{
-		public static const VOLUME_CHANGE:String = "VolumeChange";
-		
-		public var value:Number = 0;
-		
-		public function VolumeChangeEvent()
-		{
-			super(VOLUME_CHANGE);
-		}
-		
+		return _value
 	}
+	
+	private var _saveChange:Boolean = false;
+	
+	public function get saveChange():Boolean
+	{
+		return _saveChange
+	}
+	
+	public function VolumeChangeEvent(value:Number, saveChange:Boolean = false)
+	{
+		super(VOLUME_CHANGE);
+		
+		_value = value;
+		_saveChange = saveChange;
+	}
+	
+}
 }
