@@ -4,7 +4,6 @@ package com.eto.etoplayer.core
 	import com.eto.etoplayer.filesystem.TextFile;
 	import com.eto.etoplayer.states.PlayPattern;
 	
-	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	
 public class UserConfig extends EventDispatcher
@@ -29,6 +28,9 @@ public class UserConfig extends EventDispatcher
 		var playsets:Object = xml.playsets;
 		playPattern = playsets.playpattern;
 		volume = Number(playsets.volume);
+		
+		var dialogshows:Object = xml.dialogshows
+		showAppCloseMode = dialogshows.showappclosemode;
 		
 		var event:ApplicationEvent = 
 					new ApplicationEvent(ApplicationEvent.USER_CONFIG_COMPLETE);
@@ -65,6 +67,24 @@ public class UserConfig extends EventDispatcher
 		_volume = vol;
 	}
 	
+	//------------------------------
+	//	  showClodeMode
+	//------------------------------
+	
+	private static var _showAppCloseMode:String = "";
+	
+	public static function get showAppCloseMode():String
+	{
+		return _showAppCloseMode;
+	}
+	public static function set showAppCloseMode(mode:String):void
+	{
+		if(mode && mode != "")
+		{
+			_showAppCloseMode = mode;
+		}
+	}
+	
 	//--------------------------------------------------------------------------
 	//
 	//	  		method
@@ -83,6 +103,9 @@ public class UserConfig extends EventDispatcher
 		xmlString += "<playpattern>"+ playPattern +"</playpattern>"
 		xmlString += "<volume>"+ volume +"</volume>"
 		xmlString += "</playsets>";
+		xmlString += "<dialogshows>";
+		xmlString += "<showappclosemode>" + showAppCloseMode + "</showappclosemode>" ;
+		xmlString += "</dialogshows>";
 		xmlString += "</user>"
 		return xmlString;
 	}

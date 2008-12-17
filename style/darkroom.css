@@ -84,6 +84,7 @@ Button
 	textSelectedColor:#ffffff;
 	disabledColor:#111111;
 	fontWeight:normal;
+	fontSize: 12px;
 }
 
 .clearButton
@@ -304,7 +305,7 @@ CheckBox
 	textRollOverColor: #ffffff;
 	textSelectedColor:#ffffff;
 	textDisabledColor: #1e1e1e;
-	fontSize:11;
+	fontSize:12;
 	fontWeight:normal;
 	
 	horizontalGap:0;
@@ -812,7 +813,7 @@ RadioButton
 	textSelectedColor:#ffffff;
 	disabledColor: #1e1e1e;
 	dropDownStyleName: "dropDown";
-	fontSize:11;
+	fontSize:12;
 	fontWeight:normal;
 	
 	horizontalGap:0;

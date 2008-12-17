@@ -9,40 +9,50 @@
 	modalTransparencyBlur="0" modalTransparency="0.2" modalTransparencyDuration="250"
 	paddingLeft="0" paddingRight="0" paddingBottom="0" paddingTop="0"
     initialize="init()" borderColor="0x000000" closing="applicationClose(event)"
-	creationComplete="creationCompleteHandle()" 
+	creationComplete="creationCompleteHandle()"
 	headerHeight="25">
 	  
 	<mx:Script>
    	<![CDATA[
+   		import com.eto.etoplayer.states.ApplicationCloseMode;
+   		import com.eto.etoplayer.core.StageWindowManager;
+   		import com.eto.etoplayer.view.application.CloseModeDialog;
+   		import mx.managers.PopUpManager;
+   		import com.eto.etoplayer.core.UserConfig;
    		import com.eto.etoplayer.events.LoadUserConfigEvent;
-   		//import com.eto.etoplayer.util.MP3ID3Util;
-   	    //import mx.core.SoundAsset
    		import com.eto.etoplayer.events.VersionUpdateEvent;
    		import com.adobe.cairngorm.control.CairngormEventDispatcher;
    		
    		private function init():void
    		{
-   			
+   			StageWindowManager.activeManager(this.nativeWindow,true);
 		}
 		
 		private function applicationClose(event:Event):void
 		{
-			trace("ri");
 			event.preventDefault();
-			trace("ri");
-			this.visible =false;
-			//this.addEventListener(
+			if(UserConfig.showAppCloseMode == "")
+			{
+				var popUp:CloseModeDialog = new CloseModeDialog();
+				PopUpManager.addPopUp(popUp,this,true);
+				PopUpManager.centerPopUp(popUp);
+			}
+			else if(UserConfig.showAppCloseMode == ApplicationCloseMode.MINISIZE)
+			{
+				StageWindowManager.maximizeAsIcon();
+			}
+			else if(UserConfig.showAppCloseMode == ApplicationCloseMode.EXIT)
+			{
+				StageWindowManager.exit();
+			}
 		}
    		private function creationCompleteHandle():void
    		{
-   			//stage.nativeWindow.addEventListener(Event.CLOSE,applicationClose);
    			var event:VersionUpdateEvent = new VersionUpdateEvent();
 			CairngormEventDispatcher.getInstance().dispatchEvent(event);
 			
 			var configEvent:LoadUserConfigEvent = new LoadUserConfigEvent();
 			CairngormEventDispatcher.getInstance().dispatchEvent(configEvent);
-			
-			 showTrayIcon();
    		}
    		
    		private function showTrayIcon():void
@@ -69,15 +79,17 @@
    		private function setIcomProperty():void
    		{
    			var iconMenu:NativeMenu = new NativeMenu();
+   			
 			var exitCommand:NativeMenuItem = 
 								iconMenu.addItem(new NativeMenuItem("Exit"));
 			exitCommand.addEventListener(Event.SELECT,
-					function(event:Event):void 
+					function(event:Event):void
 					{
 						NativeApplication.nativeApplication.icon.bitmaps = [];
 						NativeApplication.nativeApplication.exit();
 					}
 				);
+			
 			var systray:SystemTrayIcon = 
 					NativeApplication.nativeApplication.icon as SystemTrayIcon;
 			systray.tooltip = "etoplayer";
@@ -88,6 +100,7 @@
    		private function activeWindow(event:ScreenMouseEvent):void
    		{
    			this.visible = true;
+   			nativeWindow.restore();
    		}
    	]]>
    	</mx:Script>
@@ -106,7 +119,7 @@
    	
    	<!--view-->
 	<view:Favorite/>
-	
+
 	<view:SoundDisplay/>
 	
 </mx:WindowedApplication>
