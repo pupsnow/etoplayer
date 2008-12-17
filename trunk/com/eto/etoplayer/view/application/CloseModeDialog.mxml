@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" 
+	width="276" height="186" title="提示" showCloseButton="true"
+	close="PopUpManager.removePopUp(this);">
+	<mx:Script>
+		<![CDATA[
+			import com.eto.etoplayer.core.StageWindowManager;
+			import com.eto.etoplayer.states.ApplicationCloseMode;
+			import mx.managers.PopUpManager;
+			import com.eto.etoplayer.core.UserConfig;
+			
+			private function confirm():void
+			{
+				var raValue:String = rp.selectedValue.toString();
+				if(raValue == ApplicationCloseMode.MINISIZE)
+				{
+					StageWindowManager.maximizeAsIcon();
+				}
+				else if(raValue == ApplicationCloseMode.EXIT)
+				{
+					StageWindowManager.exit();
+				}
+				
+				if(ckb.selected)
+				{
+					saveConfig(raValue);
+				}
+				
+				PopUpManager.removePopUp(this);
+			}
+			
+			private function saveConfig(mode:String):void
+			{
+				UserConfig.showAppCloseMode = mode;
+				UserConfig.save();
+			}
+		]]>
+	</mx:Script>
+	<mx:Label x="10" y="10" text="您希望执行以下哪种操作方式:" width="173"/>
+	<mx:RadioButtonGroup id="rp" selectedValue="minisize"/>
+	<mx:RadioButton x="69" y="38" label="最小化窗口" value="minisize" groupName="rp"/>
+	<mx:RadioButton x="69" y="69" label="退出etoplayer" value="exist" groupName="rp"/>
+	<mx:CheckBox x="10" y="110" label="以后都按照本次操作执行" id="ckb"/>
+	<mx:HRule x="10" y="100" width="239"/>
+	<mx:Button x="201" y="109" label="确定" width="50" click="confirm()"/>
+	
+</mx:TitleWindow>
