@@ -10,5 +10,8 @@ package com.eto.etoplayer.model
 		
 		[Bindable]
 		public var timePosition:int = 0;
+		
+		[Bindable]
+		public var currentState:String;
 	}
 }

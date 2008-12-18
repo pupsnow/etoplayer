@@ -14,6 +14,7 @@
 	  
 	<mx:Script>
    	<![CDATA[
+   		import mx.core.Window;
    		import com.eto.etoplayer.states.ApplicationCloseMode;
    		import com.eto.etoplayer.core.StageWindowManager;
    		import com.eto.etoplayer.view.application.CloseModeDialog;
@@ -25,6 +26,14 @@
    		
    		private function init():void
    		{
+   			var newWindow:Window = new Window(); 
+   			//newWindow.type = NativeWindowType.UTILITY;
+			newWindow.systemChrome = NativeWindowSystemChrome.NONE;
+			//newWindow.transparent = true; 
+			newWindow.title = "New Window"; 
+			newWindow.width = 200; 
+			newWindow.height = 200; 
+			newWindow.open(false);
    			StageWindowManager.activeManager(this.nativeWindow,true);
 		}
 		

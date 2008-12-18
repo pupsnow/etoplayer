@@ -6,6 +6,7 @@ package com.eto.etoplayer.commands
 	import com.eto.etoplayer.events.GetLyricFileEvent;
 	import com.eto.etoplayer.filesystem.TextFile;
 	import com.eto.etoplayer.model.PlayModel;
+	import com.eto.etoplayer.states.LyricLoadState;
 	import com.eto.etoplayer.util.LyricUtil;
 	import com.eto.etoplayer.view.lyric.LyricData;
 	import com.eto.etoplayer.vo.MP3Info;
@@ -37,6 +38,9 @@ package com.eto.etoplayer.commands
 		
 		private function getFileOnWeb(url:String):void
 		{
+			PlayModel.getInstance().lyricModel.currentState = 
+								LyricLoadState.LYRICLOADING;
+								
 			var regexp:RegExp = /&amp;/g
 			var codeUrl:String = url.replace(regexp,"&");
 			
