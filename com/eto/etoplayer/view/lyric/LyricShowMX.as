@@ -5,6 +5,7 @@ import com.eto.etoplayer.events.ClipboardToPlayListEvent;
 import com.eto.etoplayer.events.GetLyricListEvent;
 import com.eto.etoplayer.events.SoundPlayEvent;
 import com.eto.etoplayer.model.PlayModel;
+import com.eto.etoplayer.states.LyricLoadState;
 import com.eto.etoplayer.vo.MP3Info;
 
 import flash.desktop.Clipboard;
@@ -15,6 +16,8 @@ import flash.events.Event;
 import flash.events.NativeDragEvent;
 
 import mx.controls.Alert;
+import mx.controls.ProgressBar;
+import mx.controls.ProgressBarMode;
 import mx.core.UIComponent;
 
 public class LyricShowMX extends UIComponent
@@ -23,7 +26,8 @@ public class LyricShowMX extends UIComponent
     public var kewu:Class;
     
 	private var lyricSprite:LyricShow ;
-	//private var mainMenu:NativeMenu;
+	
+	private var _currentState:String;
 	
 	public function LyricShowMX()
 	{
@@ -80,6 +84,7 @@ public class LyricShowMX extends UIComponent
 		
 		lyricSprite.measure();
 	}
+	
 	override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
 	{
 		super.updateDisplayList(unscaledWidth,unscaledHeight);
@@ -87,6 +92,32 @@ public class LyricShowMX extends UIComponent
 		lyricSprite.updateDisplayList(unscaledWidth,unscaledHeight);
 	}
 	
+	override public function set currentState(value:String):void
+	{
+		_currentState = value;
+		
+		switch(value)
+		{
+			case LyricLoadState.LISTLOADING : 
+					displayLoading("正在查询歌词列表");
+					break;
+			case LyricLoadState.LYRICLOADING : 
+					displayLoading("正在获取歌词文件");
+					break;
+			default : break;
+		}
+	}
+	
+	private function displayLoading(label:String):void
+	{
+		var pg:ProgressBar = new ProgressBar();
+		pg.indeterminate = true;
+		pg.label = label;
+		pg.width = 120
+		pg.x = this.width/2 - 60;
+		pg.y = this.height/2 - 10;
+		this.addChild(pg);
+	}
 	private function createContextMenu():void
 	{
 		var mainMenu:NativeMenu = new NativeMenu();

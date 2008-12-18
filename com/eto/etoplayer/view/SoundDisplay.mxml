@@ -24,9 +24,12 @@
 		]]>
 	</mx:Script>
 	<!--<effects:Reflector target="{lyricShowMX}" alpha="0.6" falloff="0.7" blurAmount="0.4"/>-->
-	<lyric:LyricShowMX id="lyricShowMX" width="100%" height="100%" lyricData="{model.lyricModel.lyricData}"
+	<lyric:LyricShowMX id="lyricShowMX" width="100%" height="100%" 
+			lyricData="{model.lyricModel.lyricData}"
 			timePosition="{model.lyricModel.timePosition}"
-			contextMenuEnable="{model.playListModel.selectedItem != null?true:false}"/>
+			contextMenuEnable="{model.playListModel.selectedItem != null?true:false}"
+			currentState="{model.lyricModel.currentState}"/>
+	<!--<mx:ProgressBar label="我日" indeterminate="true" mode="event"/>-->
 	<mx:HBox width="100%" height="28">
 		<mx:Label id="mediaID" text="{model.title}"/>
 		<mx:Spacer width="100%"/>

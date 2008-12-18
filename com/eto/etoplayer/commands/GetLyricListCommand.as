@@ -7,6 +7,7 @@ package com.eto.etoplayer.commands
 	import com.eto.etoplayer.events.GetLyricListEvent;
 	import com.eto.etoplayer.filesystem.TextFile;
 	import com.eto.etoplayer.model.PlayModel;
+	import com.eto.etoplayer.states.LyricLoadState;
 	import com.eto.etoplayer.util.LyricUtil;
 	import com.eto.etoplayer.view.lyric.LyricData;
 	import com.eto.etoplayer.view.lyric.lyricLoadChoose;
@@ -31,6 +32,8 @@ package com.eto.etoplayer.commands
 		
 		override public function execute(event:CairngormEvent):void
 		{
+			PlayModel.getInstance().lyricModel.currentState = 
+								LyricLoadState.LISTLOADING;
 			var getEvent:GetLyricListEvent = GetLyricListEvent(event);
 			mp3Info = PlayModel.getInstance().playItem;
 			
