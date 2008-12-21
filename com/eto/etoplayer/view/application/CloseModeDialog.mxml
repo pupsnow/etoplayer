@@ -39,7 +39,7 @@
 	<mx:Label x="10" y="10" text="您希望执行以下哪种操作方式:" width="173"/>
 	<mx:RadioButtonGroup id="rp" selectedValue="minisize"/>
 	<mx:RadioButton x="69" y="38" label="最小化窗口" value="minisize" groupName="rp"/>
-	<mx:RadioButton x="69" y="69" label="退出etoplayer" value="exist" groupName="rp"/>
+	<mx:RadioButton x="69" y="69" label="退出etoplayer" value="exit" groupName="rp"/>
 	<mx:CheckBox x="10" y="110" label="以后都按照本次操作执行" id="ckb"/>
 	<mx:HRule x="10" y="100" width="239"/>
 	<mx:Button x="201" y="109" label="确定" width="50" click="confirm()"/>

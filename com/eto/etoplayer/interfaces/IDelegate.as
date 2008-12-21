@@ -4,6 +4,6 @@ package com.eto.etoplayer.interfaces
 
 	public interface IDelegate extends IEventDispatcher
 	{
-		function call():void
+
 	}
 }

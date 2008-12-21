@@ -4,6 +4,7 @@ import com.adobe.cairngorm.control.CairngormEventDispatcher;
 import com.eto.etoplayer.core.ApplicationDispatcher;
 import com.eto.etoplayer.core.SoundFacade;
 import com.eto.etoplayer.core.UserConfig;
+import com.eto.etoplayer.events.GetLyricFileEvent;
 import com.eto.etoplayer.events.GetLyricListEvent;
 import com.eto.etoplayer.events.SoundPlayEvent;
 import com.eto.etoplayer.events.dataEvents.ApplicationEvent;
@@ -262,8 +263,8 @@ public class PlayModel extends EventDispatcher implements IModelInstance, IPlayM
 		}
 		
 		//var mp3InfoVO:MP3Info = playItem;
-		var getEvent:GetLyricListEvent = 
-							new GetLyricListEvent();
+		var getEvent:GetLyricFileEvent = 
+							new GetLyricFileEvent(null,this.playItem);
 		CairngormEventDispatcher.getInstance().dispatchEvent(getEvent);
 	}
 	 
