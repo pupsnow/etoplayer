@@ -441,7 +441,7 @@ public class SoundFacade extends EventDispatcher implements IMediaFacade
 	
 	private function onPlayTimer(event:TimerEvent):void 
 	{
-		trace("timer");
+		//trace("timer");
 		var estimatedLength:int = 
 			Math.ceil(sound.length / (sound.bytesLoaded / sound.bytesTotal));
 		

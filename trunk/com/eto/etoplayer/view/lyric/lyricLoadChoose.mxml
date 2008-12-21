@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" 
-	width="432" height="314" title="在线搜索歌词秀"
+	width="408" height="302" title="在线搜索歌词秀"
 	showCloseButton="true" close="removePopUp()">
 	<mx:Script>
 		<![CDATA[
+			import com.eto.etoplayer.events.GetLyricListEvent;
+			import mx.controls.Alert;
 			import com.eto.etoplayer.vo.MP3Info;
 			import com.adobe.cairngorm.control.CairngormEventDispatcher;
 			import com.eto.etoplayer.events.GetLyricFileEvent;
@@ -16,32 +18,60 @@
 			public function setData(dataProvider:Object,mp3Info:MP3Info):void
 			{
 				dg.dataProvider = dataProvider;
+				dg.selectedIndex = 0;
 				this.mp3Info = mp3Info;
+				artistInput.text = mp3Info.artist;
+				titleInput.text = mp3Info.title;
+			}
+			
+			/* private function itemDoubleClickHandler(event:ListEvent):void
+			{
+				getLyricFile();
+			} */
+			
+			private function getLyricList():void
+			{
+				mp3Info.artist = artistInput.text;
+				mp3Info.title = titleInput.text;
+				var event:GetLyricListEvent = new GetLyricListEvent(mp3Info);
+				CairngormEventDispatcher.getInstance().dispatchEvent(event);
+			}
+			
+			private function getLyricFile():void
+			{
+				var url:String = dg.selectedItem.@url;
+				if(!url)
+				{
+					mx.controls.Alert.show("无效的歌词路径");
+					return;
+				}
+				var getEvent:GetLyricFileEvent = new GetLyricFileEvent(url,mp3Info);
+				CairngormEventDispatcher.getInstance().dispatchEvent(getEvent);
+				
+				removePopUp();
 			}
 			
 			private function removePopUp():void
 			{
 				PopUpManager.removePopUp(this);
 			}
-			
-			private function itemDoubleClickHandler(event:ListEvent):void
-			{
-				var url:String = event.target.selectedItem.@url;
-				var getEvent:GetLyricFileEvent = new GetLyricFileEvent(url,mp3Info);
-				CairngormEventDispatcher.getInstance().dispatchEvent(getEvent);
-				
-				removePopUp();
-			}
 		]]>
 	</mx:Script>
-	
-	<mx:DataGrid id="dg" x="23" y="38" width="366" height="216" 
-		doubleClickEnabled="true" itemDoubleClick="itemDoubleClickHandler(event)">
+
+	<mx:DataGrid id="dg" x="10" y="61" width="366" height="175" 
+		doubleClickEnabled="true" itemDoubleClick="getLyricFile()">
 		<mx:columns>
 			<mx:DataGridColumn headerText="歌手" dataField="@artist"/>
 			<mx:DataGridColumn headerText="曲名" dataField="@title"/>
 		</mx:columns>
 	</mx:DataGrid>
-	<mx:Label x="23" y="10" text="请选择您需要下载的歌词文件"/>
+	<mx:Label x="10" y="41" text="请选择您需要下载的歌词文件"/>
+	<mx:Label x="10" y="10" text="歌手:"/>
+	<mx:TextInput x="52" y="10" width="87" height="20" borderStyle="none" id="artistInput"/>
+	<mx:Label x="163" y="10" text="歌名"/>
+	<mx:TextInput x="200" y="10" width="114" height="20" borderStyle="none" id="titleInput"/>
+	<mx:Button x="322" y="8" label="搜索" width="54" click="getLyricList()"/>
+	<mx:HRule x="10" y="38" width="366"/>
+	<mx:Button x="284" y="242" label="确    定" width="92" click="getLyricFile()"/>
 	
 </mx:TitleWindow>
