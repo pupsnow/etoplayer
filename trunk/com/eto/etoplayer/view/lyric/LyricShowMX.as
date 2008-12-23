@@ -8,7 +8,6 @@ import com.eto.etoplayer.events.modelEvents.LyricListResultEvent;
 import com.eto.etoplayer.model.LyricModel;
 import com.eto.etoplayer.model.PlayModel;
 import com.eto.etoplayer.states.LyricLoadState;
-import com.eto.etoplayer.util.LyricUtil;
 import com.eto.etoplayer.vo.MP3Info;
 import com.eto.etoplayer.vo.lyric.lyricListResultVo;
 
@@ -177,6 +176,8 @@ public class LyricShowMX extends UIComponent
 		var researchMenu:NativeMenuItem = new NativeMenuItem("在线搜索");
 		var adjustLyricMenu:NativeMenuItem = new NativeMenuItem("歌词调整");
 		var copyLyricMenu:NativeMenuItem = new NativeMenuItem("复制歌词");
+		var editLyricMenu:NativeMenuItem = new NativeMenuItem("编辑歌词");
+		var importLyricMenu:NativeMenuItem = new NativeMenuItem("导入歌词");
 		adjustLyricMenu.submenu = createAdjustlyricSubMenu();
 		//adjust lyric subMenu
 		/* var adjustlyricSubMenu:NativeMenu = new NativeMenu();
@@ -190,9 +191,13 @@ public class LyricShowMX extends UIComponent
 		researchMenu.addEventListener(Event.SELECT,researchLyricFile);
 		copyLyricMenu.addEventListener(Event.SELECT,copyLyricSelectedHandler);
 		mainMenu.addItem(researchMenu);
+		mainMenu.addItem(new NativeMenuItem("这个是分割线",true));
 		mainMenu.addItem(adjustLyricMenu);
+		mainMenu.addItem(new NativeMenuItem("这个是分割线",true));
 		mainMenu.addItem(copyLyricMenu);
-		mainMenu.addItem(new NativeMenuItem("啊",true));
+		mainMenu.addItem(editLyricMenu);
+		mainMenu.addItem(importLyricMenu);
+		mainMenu.addItem(new NativeMenuItem("这个是分割线",true));
 		mainMenu.addItem(fullscreenMenu);
 		
 		this.contextMenu = mainMenu;
@@ -203,11 +208,31 @@ public class LyricShowMX extends UIComponent
 		var subMenu:NativeMenu = new NativeMenu();
 		var aheahCurrent:NativeMenuItem = new NativeMenuItem("本句提前0.5秒");
 		var delayedCurrent:NativeMenuItem = new NativeMenuItem("本句延后0.5秒");
+		var aheahNext:NativeMenuItem = new NativeMenuItem("下句提前0.5秒");
+		var delayedNext:NativeMenuItem = new NativeMenuItem("下句延后0.5秒");
+		var aheahAll:NativeMenuItem = new NativeMenuItem("全部提前0.5秒");
+		var delayedAll:NativeMenuItem = new NativeMenuItem("全部延后0.5秒");
+		var adjustByMouse:NativeMenuItem = new NativeMenuItem("鼠标滚轮调整");
+		
 		aheahCurrent.addEventListener(Event.SELECT,aheahCurrentSelectedHandler);
+		delayedCurrent.addEventListener(Event.SELECT,delayedCurrentSelectedHandler);
+		aheahNext.addEventListener(Event.SELECT,aheahNextSelectedHandler);
+		delayedNext.addEventListener(Event.SELECT,delayedNextSelectedHandler);
+		aheahAll.addEventListener(Event.SELECT,aheahAllSelectedHandler);
+		delayedAll.addEventListener(Event.SELECT,delayedAllSelectedHandler);
+		
 		subMenu.addItem(aheahCurrent);
 		subMenu.addItem(delayedCurrent);
+		subMenu.addItem(aheahNext);
+		subMenu.addItem(delayedNext);
+		subMenu.addItem(aheahAll);
+		subMenu.addItem(delayedAll);
+		subMenu.addItem(new NativeMenuItem("这个是分割线",true));
+		subMenu.addItem(adjustByMouse);
 		return subMenu;
 	}
+	
+	
 	private function removeContextMenu():void
 	{
 		this.contextMenu = null;
@@ -258,12 +283,44 @@ public class LyricShowMX extends UIComponent
 	private function aheahCurrentSelectedHandler(event:Event):void
 	{
 		lyricSprite.adjuestLyricStepPosition(-500,lyricSprite.step);
-		var aaa:String = LyricUtil.restoreFileText(lyricSprite.lyricData)
-		trace(aaa);
 	}
+	
+	private function delayedCurrentSelectedHandler(event:Event):void
+	{
+		lyricSprite.adjuestLyricStepPosition(500,lyricSprite.step);
+	}
+	
+	private function aheahNextSelectedHandler(event:Event):void
+	{
+		var nextStep:int = lyricSprite.step-1;
+		if(nextStep<lyricSprite.lyricData.times.length)
+		{
+			lyricSprite.adjuestLyricStepPosition(-500,lyricSprite.step-1)
+		}
+	}
+	
+	private function delayedNextSelectedHandler(event:Event):void
+	{
+		var nextStep:int = lyricSprite.step-1;
+		if(nextStep<lyricSprite.lyricData.times.length)
+		{
+			lyricSprite.adjuestLyricStepPosition(500,lyricSprite.step-1)
+		}
+	}
+	
+	private function aheahAllSelectedHandler(event:Event):void
+	{
+		lyricSprite.adjuestLyricAllPosition(-500);
+	}
+	
+	private function delayedAllSelectedHandler(event:Event):void
+	{
+		lyricSprite.adjuestLyricAllPosition(500);
+	}
+	
 	private function fullscreenDisplay(event:Event):void
 	{
-		mx.controls.Alert.show("给你说了没用你还点!!!!","愚蠢的人类啊",4,null,null,kewu);
+		mx.controls.Alert.show("你好，愚蠢的人类!","事到如今你依然愚蠢",4,null,null,kewu);
 	}
 }
 }
