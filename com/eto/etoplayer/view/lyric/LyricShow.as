@@ -4,10 +4,12 @@ import caurina.transitions.Tweener;
 
 import com.eto.etoplayer.util.TimeFormatter;
 
+import flash.display.GradientType;
 import flash.display.Graphics;
 import flash.display.Sprite;
 import flash.events.Event;
 import flash.events.MouseEvent;
+import flash.geom.Matrix;
 import flash.geom.Point;
 import flash.text.TextField;
 import flash.text.TextFieldAutoSize;
@@ -67,7 +69,7 @@ public class LyricShow extends Sprite
 	/**
 	 *  @private 
 	 */				
-	private var _textColor:uint = 0xffffff;
+	private var _textColor:uint = 0xbfbfbf;
 	
 	/**
 	 * nomal text color. 
@@ -92,7 +94,7 @@ public class LyricShow extends Sprite
 	/**
 	 * @private 
 	 */			
-	private var _highlightColor:uint = 0xff00000;
+	private var _highlightColor:uint = 0xff7a31;
 	
 	/**
 	 * high light text color. 
@@ -166,6 +168,11 @@ public class LyricShow extends Sprite
 	 * @private
 	 */		
 	private var backgroudSprite:Sprite;
+	
+	/**
+	 * @private
+	 */		
+	private var effectSprite:Sprite;
 	
 	/**
 	 * @private
@@ -316,9 +323,9 @@ public class LyricShow extends Sprite
 	//
 	//------------------------------------------------------------
 	
-	//-----------------------------------------
+	//-------------------------------
 	//		lyricData
-	//-----------------------------------------
+	//-------------------------------
 	
 	/**
 	 * @private 
@@ -403,9 +410,9 @@ public class LyricShow extends Sprite
 		}
 	}
 	
-	//-----------------------------------------
+	//-------------------------------
 	//		text
-	//-----------------------------------------
+	//-------------------------------
 	
 	/**
 	 * String of lyric text. 
@@ -428,9 +435,9 @@ public class LyricShow extends Sprite
 		highLightText.text = lyricText;
 	}
 	
-	//-----------------------------------------
+	//-------------------------------
 	//		position
-	//-----------------------------------------
+	//-------------------------------
 	
 	/**
 	 * @private 
@@ -453,36 +460,8 @@ public class LyricShow extends Sprite
 	{
 		if(lyricData && !adjusting)
 		{
-			var times:Array = lyricData.times;
-			var num:Number = 0;
-			for(var i:int=0;i<times.length;i++)
-			{
-				if((position + 500)<= Number(times[i]))
-				{
-					num = i - 1;
-					num = Math.max(num,0);
-					break;
-				}
-			}
-			
 			_position = position;
-			//trace("step:"+step +"num:"+num)
-			var gap:int = num - step;
-			if(gap == 0)
-			{
-				//textFrame.y -= 1;
-			}
-			else if(gap == 1 || gap == 2 )
-			{
-				step = num;
-				textMoveBy = lineHeight*step;
-				addEventListener(Event.EXIT_FRAME,textMoveByTimePosition)
-			}
-			else if(gap > 1 || gap < 0)
-			{
-				step = num;
-				textFrame.y = getTextInitializeY() - lineHeight*step
-			}
+			textMoveByPosition(position);
 		}
 	}
 	
@@ -526,6 +505,7 @@ public class LyricShow extends Sprite
 		if(!textFrameMask)
 		{
 			textFrameMask = new Sprite();
+			//textFrameMask.cacheAsBitmap = true;
 			addChild(textFrameMask);
 		}
 		
@@ -535,8 +515,9 @@ public class LyricShow extends Sprite
 			textFrame = new Sprite();
 			//textFrame.cacheAsBitmap = true;
 			textFrame.mask = textFrameMask;
+			//textFrame.cacheAsBitmap = true;
 			//
-			addChild(textFrame);
+			addChild(textFrame); 
 		}
 		
 		// Add normal display text to normalFrame
@@ -544,6 +525,7 @@ public class LyricShow extends Sprite
 		{
 			normalText = new TextField();
 			normalText.cacheAsBitmap = true;
+			//normalText.mask = textFrameMask;
 			textFrame.addChild(normalText);
 		}
 		
@@ -563,6 +545,11 @@ public class LyricShow extends Sprite
 			textFrame.addChild(highLightText);
 		}
 		
+		if(!effectSprite)
+		{
+			effectSprite = new Sprite();
+			addChild(effectSprite);
+		}
 		childrenCreated();
 	}
 	
@@ -661,12 +648,31 @@ public class LyricShow extends Sprite
 		//Updates display children when text has been set.
 		if(isTextCreated)
 		{
+            
 			//Draws text mask frame.
-			var textFrameMaskDraw:Graphics = textFrameMask.graphics;
-			textFrameMaskDraw.clear();
-			textFrameMaskDraw.beginFill(0xFF0000,0.5);
-			textFrameMaskDraw.drawRect(0,0,unscaledWidth,unscaledHeight);
-			textFrameMaskDraw.endFill();
+			var textMastDraw:Graphics = textFrameMask.graphics;
+			textMastDraw.clear();
+			textMastDraw.beginFill(0x000000,1)
+			textMastDraw.drawRect(0,0,unscaledWidth,unscaledHeight);
+			textMastDraw.endFill();
+			
+			//Draws text mask effect;
+			var effectHeight:int = 50;
+			var colors:Array = [0x000000, 0x000000];
+			var alphas:Array = [1, 0];
+			var ratios:Array = [0, 255];
+			var matrixTop:Matrix = new Matrix();
+			matrixTop.createGradientBox(unscaledWidth,effectHeight,Math.PI/2,0,0); 
+			var matrixBottom:Matrix = new Matrix();
+			matrixBottom.createGradientBox(unscaledWidth,effectHeight,
+											- Math.PI/2,
+											0,unscaledHeight-effectHeight);
+			var textFrameDraw:Graphics = effectSprite.graphics;
+			textFrameDraw.clear();
+			textFrameDraw.beginGradientFill(GradientType.LINEAR,colors,alphas,ratios,matrixTop);
+			textFrameDraw.drawRect(0,0,unscaledWidth,effectHeight);
+			textFrameDraw.beginGradientFill(GradientType.LINEAR,colors,alphas,ratios,matrixBottom);
+			textFrameDraw.drawRect(0,unscaledHeight - effectHeight,unscaledWidth,effectHeight);
 			
 			//Draws high light text mask.
 			var highlightMaskDraw:Graphics = highLightTextMask.graphics;
@@ -699,11 +705,56 @@ public class LyricShow extends Sprite
 		textFiled.width = unscaledWidth;
 	}
 	
-	//private var oldTextFrameY:int = 0;
+	/**
+	 * @private
+	 * @param num Number of move to step.
+	 */
+	private function textMoveByPosition(pos:int):void
+	{
+		var times:Array = lyricData.times;
+		var num:Number = 0;
+		for(var i:int=0;i<times.length;i++)
+		{
+			if((position + 500)<= Number(times[i]))
+			{
+				num = i - 1;
+				num = Math.max(num,0);
+				break;
+			}
+		}
+		
+		textMoveByStep(num);
+	}
+	
+	/**
+	 * @private
+	 * @param num Number of move to step.
+	 */	
+	private function textMoveByStep(num:int):void
+	{
+		var gap:int = num - step;
+		if(gap == 0)
+		{
+			//textFrame.y -= 1;
+		}
+		else if(gap == 1 || gap == 2 )
+		{
+			step = num;
+			textMoveBy = lineHeight*step;
+			addEventListener(Event.EXIT_FRAME,textTweenerMove)
+		}
+		else if(gap > 1 || gap < 0)
+		{
+			step = num;
+			textMoveBy = lineHeight*step;
+			textFrame.y = getTextInitializeY() - lineHeight*step
+		}
+	}
+
 	/**
 	 * @private 
 	 */		
-	private function textMoveByTimePosition(event:Event):void
+	private function textTweenerMove(event:Event):void
 	{
 		if(!adjusting)
 		{
@@ -714,7 +765,7 @@ public class LyricShow extends Sprite
 			//var gap:Number = 2;
 			textFrame.y -= 2; 
 			if(textFrame.y <= moveToY)
-				removeEventListener(Event.EXIT_FRAME,textMoveByTimePosition);
+				removeEventListener(Event.EXIT_FRAME,textTweenerMove);
 		}
 	}
 	
@@ -874,26 +925,72 @@ public class LyricShow extends Sprite
 	{
 		
 	}
+	
 	/**
 	 * 
 	 * @param event
 	 * 
 	 */	
-	public function adjuestLyricStepPosition(millisecond:int,step:int):void
+	public function adjuestLyricStepPosition(adjuestSecound:int,step:int):void
 	{
-		var times:Array = this.lyricData.times;
-		var adjuestTime:int = times[step] + millisecond;
-		adjuestTime = Math.max(0,adjuestTime);
-		times[step] = adjuestTime;
+		if(adjuestSecound<0)
+		{
+			aheadLyricStepPosition(adjuestSecound,step);
+		}
+		else if(adjuestSecound>0)
+		{
+			delayLyricStepPosition(adjuestSecound,step);
+		}
 	}
 	
+	private function aheadLyricStepPosition(adjuestSecound:int,step:int):void
+	{
+		var times:Array = this.lyricData.times;
+		var adjuestTime:int = times[step] + adjuestSecound;
+		if(adjuestTime > 0)
+		{
+			var prevStep:int = Math.max(0,step-1);
+			if(step == 0 || adjuestTime > times[prevStep])
+			{
+				times[step] = adjuestTime;
+			}
+			else
+			{
+				textMoveByStep(prevStep);
+			}
+		}
+	}
+	
+	private function delayLyricStepPosition(adjuestSecound:int,step:int):void
+	{
+		var times:Array = this.lyricData.times;
+		var adjuestTime:int = times[step] + adjuestSecound;
+		var lastindex:int = times.length -1
+		var nextSetp:int = Math.min(lastindex,step + 1);
+		if(step == lastindex || adjuestTime < times[nextSetp])
+		{
+			times[step] = adjuestTime;
+		}
+		else
+		{
+			textMoveByStep(nextSetp);
+		}
+		
+	}
 	public function adjuestLyricAllPosition(millisecond:int):void
 	{
-		var slength:int = this.lyricData.times.length;
+		var times:Array = lyricData.times
+		if(times[0] + millisecond <0)
+		{
+			return;
+		}
+		var slength:int = times.length;
 		for(var i:int = 0; i<slength;i++)
 		{
-			adjuestLyricStepPosition(millisecond,i);
-		}	
+			times[i] = times[i] + millisecond;
+		}
+		
+		textMoveByPosition(this.position + millisecond);	
 	}
 }
 }
