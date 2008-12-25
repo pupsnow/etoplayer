@@ -933,6 +933,10 @@ public class LyricShow extends Sprite
 	 */	
 	public function adjuestLyricStepPosition(adjuestSecound:int,step:int):void
 	{
+		if(step<0 || step>=lyricData.times.length)
+		{
+			return;
+		}
 		if(adjuestSecound<0)
 		{
 			aheadLyricStepPosition(adjuestSecound,step);
