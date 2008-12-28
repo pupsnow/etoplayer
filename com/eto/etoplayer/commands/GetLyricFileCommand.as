@@ -99,9 +99,10 @@ public class GetLyricFileCommand implements ICommand
 	{
 		var textFile:TextFile = new TextFile(filePath);
 		var lyricText:String = textFile.read();
-		var lyrData:LyricData = LyricUtil.parse(lyricText);
+		setLyricData(lyricText);
+		//var lyrData:LyricData = LyricUtil.parse(lyricText);
 		//trace(lyrData.contents.length);
-		lyricModel.lyricData = lyrData;
+		//lyricModel.lyricData = lyrData;
 	}
 	
 	private function checkURL(url:String):Boolean
@@ -145,7 +146,8 @@ public class GetLyricFileCommand implements ICommand
 	private function setLyricData(lyricText:String):void
 	{
 		var lyrData:LyricData = LyricUtil.parse(lyricText);
-		PlayModel.getInstance().lyricModel.lyricData = lyrData;
+		lyricModel.lyricData = lyrData;
+		lyricModel.lyricFileChange = false;
 	}
 }
 }

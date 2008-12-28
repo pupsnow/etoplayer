@@ -1,10 +1,13 @@
 package com.eto.etoplayer.view.lyric
 {
+import caurina.transitions.Tweener;
+
 import com.adobe.cairngorm.control.CairngormEventDispatcher;
 import com.eto.etoplayer.events.ClipboardToPlayListEvent;
-import com.eto.etoplayer.events.GetLyricListEvent;
+import com.eto.etoplayer.events.SaveLyricFileEvent;
 import com.eto.etoplayer.events.SoundPlayEvent;
 import com.eto.etoplayer.events.modelEvents.LyricListResultEvent;
+import com.eto.etoplayer.events.viewEvents.AdjustByMouseEvent;
 import com.eto.etoplayer.model.LyricModel;
 import com.eto.etoplayer.model.PlayModel;
 import com.eto.etoplayer.states.LyricLoadState;
@@ -12,14 +15,11 @@ import com.eto.etoplayer.vo.MP3Info;
 import com.eto.etoplayer.vo.lyric.lyricListResultVo;
 
 import flash.desktop.Clipboard;
-import flash.desktop.ClipboardFormats;
 import flash.desktop.NativeDragManager;
-import flash.display.NativeMenu;
-import flash.display.NativeMenuItem;
 import flash.events.Event;
+import flash.events.MouseEvent;
 import flash.events.NativeDragEvent;
 
-import mx.controls.Alert;
 import mx.controls.ProgressBar;
 import mx.core.UIComponent;
 import mx.managers.PopUpManager;
@@ -34,6 +34,11 @@ public class LyricShowMX extends UIComponent
 	private var _currentState:String;
 	
 	private var lyricModel:LyricModel; 
+	
+	private var adjustByMouseWheel:Boolean = false;
+	
+	private var saveClew:lyricAdjustSaveClew;
+	
 	public function LyricShowMX()
 	{
 		super();
@@ -41,11 +46,13 @@ public class LyricShowMX extends UIComponent
 		lyricModel = PlayModel.getInstance().lyricModel;
 		lyricModel.addEventListener(
 				   LyricListResultEvent.LYRIC_LIST_RESULT,popUplyricChooseView);
-								
+		lyricModel.addEventListener("lyricFileChanged",lyricFileChangedHandler);						
 		addEventListener(
 					NativeDragEvent.NATIVE_DRAG_ENTER,NativeDragEnterHandler);
 		addEventListener(
 					NativeDragEvent.NATIVE_DRAG_DROP,NativeDragDropHandler);
+					
+		addEventListener(MouseEvent.MOUSE_WHEEL,mouseWheelHandler);
 	}
 	
 	public function set contextMenuEnable(bln:Boolean):void
@@ -77,7 +84,15 @@ public class LyricShowMX extends UIComponent
 		
 		lyricSprite = new LyricShow();
 		lyricSprite.addEventListener(PositionChangeEvent.POSITION_CHANGE,positionChange);
+		lyricSprite.addEventListener("lyrciDataEdited",lyrciDataEditedHandler);
 		addChild(lyricSprite);
+		
+		saveClew = new lyricAdjustSaveClew();
+		saveClew.addEventListener("saveButtonClick",saveButtonClickHandler);
+		addChild(saveClew);
+		//saveClew.invalidateDisplayList();
+		saveClew.x = 1;
+		saveClew.y = -30;
 	}
 	
 	override protected function commitProperties():void
@@ -97,7 +112,7 @@ public class LyricShowMX extends UIComponent
 	override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
 	{
 		super.updateDisplayList(unscaledWidth,unscaledHeight);
-		
+		saveClew.width = unscaledWidth;
 		lyricSprite.updateDisplayList(unscaledWidth,unscaledHeight);
 	}
 	
@@ -165,6 +180,8 @@ public class LyricShowMX extends UIComponent
 	private function createContextMenu():void
 	{
 		this.contextMenu = new lyricContextMenu(this.lyricSprite);
+		lyricContextMenu(this.contextMenu).addEventListener(
+					AdjustByMouseEvent.ADJUST_BY_MOUSE,adjustByMouseEventHadler)
 	}
 	
 	private function removeContextMenu():void
@@ -173,6 +190,11 @@ public class LyricShowMX extends UIComponent
 		this.contextMenu = null;
 	}
 	
+	private function adjustByMouseEventHadler(event:AdjustByMouseEvent):void
+	{
+		this.adjustByMouseWheel = event.checked;
+		
+	}
 	private function NativeDragEnterHandler(event:NativeDragEvent):void
 	{
 		NativeDragManager.acceptDragDrop(this);
@@ -186,6 +208,41 @@ public class LyricShowMX extends UIComponent
 		CairngormEventDispatcher.getInstance().dispatchEvent(addEvent);
 	}
 	
+	private function mouseWheelHandler(event:MouseEvent):void
+	{
+		if(adjustByMouseWheel)
+		{
+			var num:int = int(-event.delta/3);
+			lyricSprite.adjuestLyricAllPosition(num * 500);
+		}
+	}
+	//private var saveClewShowed:Boolean = false;
+	
+	private function lyrciDataEditedHandler(event:Event):void
+	{
+		PlayModel.getInstance().lyricModel.lyricFileChange = true;
+	}
+	
+	private function saveButtonClickHandler(e:Event):void
+	{
+		var event:SaveLyricFileEvent = 
+						new SaveLyricFileEvent(lyricSprite.lyricData,
+											PlayModel.getInstance().playItem);
+		CairngormEventDispatcher.getInstance().dispatchEvent(event);
+	}
+	private function lyricFileChangedHandler(event:Event):void
+	{
+		var changed:Boolean = PlayModel.getInstance().lyricModel.lyricFileChange;
+		if(changed)
+		{
+			showSaveClew();
+		}
+		else
+		{
+			hideSaveClew();
+		}
+	}
+	
 	private function positionChange(event:PositionChangeEvent):void
 	{
 		var item:MP3Info = PlayModel.getInstance().playItem
@@ -193,6 +250,17 @@ public class LyricShowMX extends UIComponent
 		var playEvent:SoundPlayEvent = new SoundPlayEvent(item);
 		playEvent.position = event.newPosition;
 		CairngormEventDispatcher.getInstance().dispatchEvent(playEvent);
+	}
+	
+	private function showSaveClew():void
+	{
+		//mx.controls.Alert.show("aaa");
+		Tweener.addTween(this.saveClew,{y:2,time:1,transition:"easeOutElastic"});
+	}
+	
+	private function hideSaveClew():void
+	{
+		Tweener.addTween(this.saveClew,{y:-30,time:1,transition:"easeInOutBack"});
 	}
 }
 }
