@@ -2,6 +2,7 @@ package com.eto.etoplayer.view.lyric
 {
 import com.adobe.cairngorm.control.CairngormEventDispatcher;
 import com.eto.etoplayer.events.GetLyricListEvent;
+import com.eto.etoplayer.events.viewEvents.AdjustByMouseEvent;
 import com.eto.etoplayer.interfaces.IDispose;
 import com.eto.etoplayer.model.PlayModel;
 import com.eto.etoplayer.vo.MP3Info;
@@ -14,6 +15,7 @@ import flash.events.Event;
 
 import mx.controls.Alert;
 
+[Event(name="adjustByMouse", type="com.eto.etoplayer.events.viewEvents.AdjustByMouseEvent")]
 public class lyricContextMenu extends NativeMenu implements IDispose
 {
 	[Embed(source="images/kewu.png")]
@@ -25,7 +27,7 @@ public class lyricContextMenu extends NativeMenu implements IDispose
 		
 		this.lyricSprite = lyricSprite;
 		
-		createContextMenu();
+		createChildren();
 	}
 	//--------------------------------------------------------------------------
 	//
@@ -130,6 +132,8 @@ public class lyricContextMenu extends NativeMenu implements IDispose
 		delayedNext.addEventListener(Event.SELECT,delayedNextSelectedHandler);
 		aheahAll.addEventListener(Event.SELECT,aheahAllSelectedHandler);
 		delayedAll.addEventListener(Event.SELECT,delayedAllSelectedHandler);
+		adjustByMouse.addEventListener(
+									Event.SELECT,adjustByMouseSelectedHandler);
 	}
 	
 	private function removeMenuEventListener():void
@@ -148,6 +152,8 @@ public class lyricContextMenu extends NativeMenu implements IDispose
 									Event.SELECT,delayedNextSelectedHandler);
 		aheahAll.removeEventListener(Event.SELECT,aheahAllSelectedHandler);
 		delayedAll.removeEventListener(Event.SELECT,delayedAllSelectedHandler);
+		adjustByMouse.removeEventListener(
+									Event.SELECT,adjustByMouseSelectedHandler);
 	}
 	
 	//--------------------------------------------------------------------------
@@ -187,12 +193,12 @@ public class lyricContextMenu extends NativeMenu implements IDispose
 	
 	private function aheahNextSelectedHandler(event:Event):void
 	{
-		adjuestLyricStepPosition(-500,lyricSprite.step-1);
+		adjuestLyricStepPosition(-500,lyricSprite.step+1);
 	}
 	
 	private function delayedNextSelectedHandler(event:Event):void
 	{
-		adjuestLyricStepPosition(500,lyricSprite.step-1);
+		adjuestLyricStepPosition(500,lyricSprite.step+1);
 	}
 	
 	private function aheahAllSelectedHandler(event:Event):void
@@ -203,6 +209,12 @@ public class lyricContextMenu extends NativeMenu implements IDispose
 	private function delayedAllSelectedHandler(event:Event):void
 	{
 		adjuestLyricAllPosition(500)
+	}
+	
+	private function adjustByMouseSelectedHandler(event:Event):void
+	{
+		this.adjustByMouse.checked = !this.adjustByMouse.checked;
+		this.dispatchEvent(new AdjustByMouseEvent(this.adjustByMouse.checked));
 	}
 	
 	private function fullscreenDisplay(event:Event):void

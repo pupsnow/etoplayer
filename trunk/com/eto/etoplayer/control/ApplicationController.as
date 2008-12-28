@@ -44,6 +44,7 @@ public class ApplicationController extends FrontController
 		
 		addCommand(GetLyricListEvent.GET_LRC_LIST,GetLyricListCommand);
 		addCommand(GetLyricFileEvent.GET_LYRIC_FILE,GetLyricFileCommand);
+		addCommand(SaveLyricFileEvent.SAVE_LYRIC_FILE,SaveLyricFileCommand);
 		
 		//---------------------------------------------------------------
 		//					playlist control

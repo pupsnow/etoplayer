@@ -32,18 +32,16 @@ public class TimeFormatter
 		
 		var minNum:int= int(msel/60000);//计算分钟
 		var secoundNum:Number = (msel/1000) %60;
-		trace("msel:"+msel + "secoundNum:"+secoundNum);
 		var minStr:String = correctLength(minNum);
 		var scStr:String = "";
 		if(secoundNum < 10)
 		{
-			scStr = "0" + secoundNum;
+			scStr = "0" + secoundNum.toFixed(2);
 		}
 		else
 		{
-			scStr = secoundNum.toString();
+			scStr = secoundNum.toFixed(2);
 		}
-		scStr = scStr.substr(0,5);
 		return minStr + ":" + scStr;
 	}
 	

@@ -85,7 +85,7 @@ public class LyricUtil
 		
 		return lyricObject;
  	}
- 		
+ 	
  	public static function formartFileName(title:String,artist:String):String
  	{
  		return title + "_-_" + artist + ".lrc";
@@ -94,19 +94,37 @@ public class LyricUtil
 	public static function restoreFileText(lyricData:LyricData):String
 	{
 		var fileText:String = "";
-		fileText += "[ti:" + lyricData.title + "]\r\n";
-		fileText += "[ar:" + lyricData.artist + "]\r\n";
-		fileText += "[ab:" + lyricData.album + "]\r\n";
-		fileText += "[by:" + lyricData.madeBy + "]\r\n"; 
-		var idObject:Object = new Object();
-		for(var i:int = 0; i<lyricData.times.length; i++)
+		fileText += lyricData.title.replace("曲名:","ti:")+"\r\n";
+		fileText += lyricData.artist.replace("艺术家:","ar:")+"\r\n";
+		fileText += lyricData.album.replace("专辑:","ab:")+"\r\n";
+		fileText += lyricData.madeBy.replace("制作:","by:")+"\r\n";
+		
+		var idList:Object = new Object();
+		var contents:Array = lyricData.contents;
+		var times:Array = lyricData.times;
+		for(var i:int = 0; i<contents.length; i++)
 		{
-			var times:Array = lyricData.times;
-			var contents:Array = lyricData.contents;
-			fileText += "["+TimeFormatter.MSELToLyricTime(times[i])+"]" + 
-						contents[i] + "\r\n";
+			if(contents[i] == "")
+			{
+				fileText+= "["+TimeFormatter.MSELToLyricTime(times[i])+"]\r\n";
+			}
+			else
+			{
+				if(!idList[contents[i]])
+				{
+					for(var n:int = 0;n<contents.length;n++)
+					{
+						if(contents[n] == contents[i])
+						{
+							fileText+="["+ TimeFormatter.MSELToLyricTime(times[n])+"]"
+						}
+					}
+					fileText+= contents[i] + "\r\n";
+					idList[contents[i]] = true;
+				}
+			}
+			
 		}
-		//trace("fileText:"+fileText);
 		return fileText;
 	}
 }

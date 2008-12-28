@@ -25,6 +25,11 @@ import flash.text.TextLineMetrics;
 [Event(name="positionChange", type="com.eto.etoplayer.view.lyric.PositionChangeEvent")]
 
 /**
+ *  Dispatched when lyricText's time position is changing by MouseWheel.
+ */
+[Event(name="lyrciDataEdited", type="flash.events.Event")]
+
+/**
  * 
  * @author Riyco Zhang
  * 
@@ -154,7 +159,7 @@ public class LyricShow extends Sprite
 		addEventListener(MouseEvent.MOUSE_MOVE,adjustingPlayPosition);
 		addEventListener(MouseEvent.MOUSE_UP,endAdjustPlayPosition);
 		addEventListener(MouseEvent.ROLL_OUT,endAdjustPlayPosition);
-		addEventListener(MouseEvent.MOUSE_WHEEL,mouseWheelHandler);
+		
 		createChildren();
 	}
 	
@@ -709,14 +714,20 @@ public class LyricShow extends Sprite
 	 * @private
 	 * @param num Number of move to step.
 	 */
-	private function textMoveByPosition(pos:int):void
+	private function textMoveByPosition(pos:int,byTime:Boolean = true):void
 	{
 		var times:Array = lyricData.times;
 		var num:Number = 0;
 		for(var i:int=0;i<times.length;i++)
 		{
-			if((position + 500)<= Number(times[i]))
+			var compareNum:int = position;
+			if(byTime)
 			{
+				compareNum += 500; 
+			}
+			if((compareNum + 500)<= Number(times[i]))
+			{
+				//trace(compareNum)
 				num = i - 1;
 				num = Math.max(num,0);
 				break;
@@ -921,11 +932,6 @@ public class LyricShow extends Sprite
 		}
 	}
 	
-	private function mouseWheelHandler(event:MouseEvent):void
-	{
-		
-	}
-	
 	/**
 	 * 
 	 * @param event
@@ -933,7 +939,7 @@ public class LyricShow extends Sprite
 	 */	
 	public function adjuestLyricStepPosition(adjuestSecound:int,step:int):void
 	{
-		if(step<0 || step>=lyricData.times.length)
+		if(step<0 || step>=lyricData.times.length || adjuestSecound ==0)
 		{
 			return;
 		}
@@ -945,6 +951,7 @@ public class LyricShow extends Sprite
 		{
 			delayLyricStepPosition(adjuestSecound,step);
 		}
+		dispatchEvent(new Event("lyrciDataEdited"));
 	}
 	
 	private function aheadLyricStepPosition(adjuestSecound:int,step:int):void
@@ -981,20 +988,47 @@ public class LyricShow extends Sprite
 		}
 		
 	}
+	
+	private var lock:Boolean = true;
 	public function adjuestLyricAllPosition(millisecond:int):void
 	{
-		var times:Array = lyricData.times
-		if(times[0] + millisecond <0)
+		if(lock)
+		{
+			lock = false;
+		}
+		else
 		{
 			return;
 		}
+		var times:Array = lyricData.times
+		/* var adjHeadNum:int = times[0] + millisecond
+		if(adjHeadNum <0)
+		{
+			times[0] = 0;
+		} 
+		else
+		{
+			times[0] = adjHeadNum;
+		} */
 		var slength:int = times.length;
 		for(var i:int = 0; i<slength;i++)
 		{
-			times[i] = times[i] + millisecond;
+			var adjNum:Number = times[i] + millisecond;
+			//if(adjNum>500)
+			//{
+				times[i] = adjNum;
+			//}
+			//else
+			//{
+				//times[i] = times[i]/2;
+			//}
 		}
+		//trace("position:"+this.position);
+		//trace("position:"+this.lyricData.times.toString());
+		textMoveByPosition(this.position,false);
 		
-		textMoveByPosition(this.position + millisecond);	
+		lock = true;
+		dispatchEvent(new Event("lyrciDataEdited"));	
 	}
 }
 }

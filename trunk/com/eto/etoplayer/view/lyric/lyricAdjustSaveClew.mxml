@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" height="30" backgroundColor="#3e3e3e"
+	borderStyle="solid" backgroundAlpha="0.8" verticalAlign="middle"
+	borderColor="#4e4e4e">
+	<mx:Script>
+		<![CDATA[
+			import com.eto.etoplayer.events.SaveLyricFileEvent;
+			import com.eto.etoplayer.vo.MP3Info;
+			//private var mp3Info:MP3Info
+			private function saveButtonClickHandler():void
+			{
+				this.dispatchEvent(new Event("saveButtonClick"));
+			}
+		]]>
+	</mx:Script>
+	<mx:Label text="您对歌词时间作了调整，单击此处保存设置" width="100%"/>
+	<mx:Spacer width="100%" height="100%"/>
+	<mx:Button label="保存" click="saveButtonClickHandler()"/>
+	
+</mx:HBox>
