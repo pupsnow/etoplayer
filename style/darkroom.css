@@ -957,7 +957,7 @@ TabNavigator
 	borderThickness:1;
 	backgroundColor:#3e3e3e;
 	fontWeight:normal;
-	fontSize:11;
+	fontSize:12;
 	borderSkin: Embed(source="darkroom.swf", symbol="tabNav_bg");
 	color: #aaaaaa;
 	textRollOverColor: #ffffff;

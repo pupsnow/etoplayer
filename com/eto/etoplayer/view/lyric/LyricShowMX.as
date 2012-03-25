@@ -16,6 +16,8 @@ import com.eto.etoplayer.vo.lyric.lyricListResultVo;
 
 import flash.desktop.Clipboard;
 import flash.desktop.NativeDragManager;
+import flash.display.Graphics;
+import flash.display.Sprite;
 import flash.events.Event;
 import flash.events.MouseEvent;
 import flash.events.NativeDragEvent;
@@ -38,6 +40,8 @@ public class LyricShowMX extends UIComponent
 	private var adjustByMouseWheel:Boolean = false;
 	
 	private var saveClew:lyricAdjustSaveClew;
+	
+	private var uiMask:Sprite;
 	
 	public function LyricShowMX()
 	{
@@ -93,6 +97,11 @@ public class LyricShowMX extends UIComponent
 		//saveClew.invalidateDisplayList();
 		saveClew.x = 1;
 		saveClew.y = -30;
+		
+		uiMask = new Sprite();
+		this.addChild(uiMask);
+		this.mask = uiMask;
+		
 	}
 	
 	override protected function commitProperties():void
@@ -114,6 +123,12 @@ public class LyricShowMX extends UIComponent
 		super.updateDisplayList(unscaledWidth,unscaledHeight);
 		saveClew.width = unscaledWidth;
 		lyricSprite.updateDisplayList(unscaledWidth,unscaledHeight);
+		
+		var g:Graphics = uiMask.graphics;
+		g.clear();
+		g.beginFill(0x000000,1);
+		g.drawRect(0,0,unscaledWidth,unscaledHeight);
+		g.endFill();
 	}
 	
 	override public function set currentState(value:String):void

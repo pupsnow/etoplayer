@@ -1,36 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:WindowedApplication xmlns:mx="http://www.adobe.com/2006/mxml"
-	xmlns:control="com.eto.etoplayer.control.*" titleBarColors="[0x555555,0x333333]"
+	xmlns:control="com.eto.etoplayer.control.*"
 	xmlns:business="com.eto.etoplayer.business.*"
 	xmlns:view="com.eto.etoplayer.view.*" cornerRadius="0"
-	title="etoplayer Alpha 0.4" titleIcon="@Embed(source='assets/logo.png')"
+	title="etoplayer Alpha 0.5" titleIcon="@Embed(source='assets/logo.png')"
 	layout="horizontal" showStatusBar="false" horizontalGap="0"
 	horizontalAlign="center" verticalAlign="middle"
 	modalTransparencyBlur="0" modalTransparency="0.2" modalTransparencyDuration="250"
 	paddingLeft="0" paddingRight="0" paddingBottom="0" paddingTop="0"
-    initialize="init()" borderColor="0x000000" closing="applicationClose(event)"
+    initialize="init()" closing="applicationClose(event)"
 	creationComplete="creationCompleteHandle()"
-	headerHeight="25">
+	headerHeight="25" xmlns:lyric="com.eto.etoplayer.view.lyric.*">
 	  
 	<mx:Script>
    	<![CDATA[
+   		import com.eto.etoplayer.data.UserConfig;
+   		import com.eto.etoplayer.model.PlayModel;
    		import mx.core.Window;
    		import com.eto.etoplayer.states.ApplicationCloseMode;
    		import com.eto.etoplayer.core.StageWindowManager;
    		import com.eto.etoplayer.view.application.CloseModeDialog;
    		import mx.managers.PopUpManager;
-   		import com.eto.etoplayer.core.UserConfig;
+   		
    		import com.eto.etoplayer.events.LoadUserConfigEvent;
    		import com.eto.etoplayer.events.VersionUpdateEvent;
    		import com.adobe.cairngorm.control.CairngormEventDispatcher;
    		
+   		[Bindable]
+		private var model:PlayModel = PlayModel.getInstance();
+			
    		private function init():void
    		{
    			StageWindowManager.activeManager(this.nativeWindow,true);
 		}
 		
 		private function applicationClose(event:Event):void
-		{
+		{//this.getStyle(
 			event.preventDefault();
 			if(UserConfig.showAppCloseMode == "")
 			{
@@ -62,7 +67,7 @@
    		
    	</mx:XMLList>
    	<!--specify style source-->
-   	<mx:Style source="style/darkroom.css"/>
+   	<mx:Style source="style/appStyle.css"/>
    	
    	<!--initialize controller-->
    	<control:ApplicationController/>
@@ -71,8 +76,21 @@
    	<business:Services/>
    	
    	<!--view-->
-	<view:Favorite/>
-
+	<!--<view:Favorite/>-->
+	<mx:TabNavigator width="100%" height="100%" paddingTop="1" creationPolicy="all">
+		<mx:Canvas width="100%" height="100%" label="歌词秀">
+			<lyric:LyricShowMX id="lyricShowMX" width="100%" height="100%" 
+				lyricData="{model.lyricModel.lyricData}"
+				timePosition="{model.lyricModel.timePosition}"
+				contextMenuEnable="{model.playItem != null?true:false}"
+				currentState="{model.lyricModel.currentState}"/>
+		</mx:Canvas>
+		<mx:VBox width="100%" height="100%" label="歌曲推荐" verticalAlign="middle">
+			<mx:Label text="www.etoplayer.com"/>
+		</mx:VBox>
+	</mx:TabNavigator>
+	
+	
 	<view:SoundDisplay/>
 	
 </mx:WindowedApplication>

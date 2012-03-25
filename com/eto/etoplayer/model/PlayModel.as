@@ -3,9 +3,8 @@ package com.eto.etoplayer.model
 import com.adobe.cairngorm.control.CairngormEventDispatcher;
 import com.eto.etoplayer.core.ApplicationDispatcher;
 import com.eto.etoplayer.core.SoundFacade;
-import com.eto.etoplayer.core.UserConfig;
+import com.eto.etoplayer.data.UserConfig;
 import com.eto.etoplayer.events.GetLyricFileEvent;
-import com.eto.etoplayer.events.GetLyricListEvent;
 import com.eto.etoplayer.events.SoundPlayEvent;
 import com.eto.etoplayer.events.dataEvents.ApplicationEvent;
 import com.eto.etoplayer.interfaces.IMediaFacade;

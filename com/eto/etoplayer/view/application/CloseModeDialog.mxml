@@ -4,10 +4,10 @@
 	close="PopUpManager.removePopUp(this);">
 	<mx:Script>
 		<![CDATA[
+			import com.eto.etoplayer.data.UserConfig;
 			import com.eto.etoplayer.core.StageWindowManager;
 			import com.eto.etoplayer.states.ApplicationCloseMode;
 			import mx.managers.PopUpManager;
-			import com.eto.etoplayer.core.UserConfig;
 			
 			private function confirm():void
 			{

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml"
 	xmlns:player="com.eto.etoplayer.view.player.*"
-	width="250" height="35" backgroundColor="#3e3e3e" 
-	verticalAlign="middle" horizontalAlign="center"  horizontalGap="1" 
+	width="250" height="35" 
+	verticalAlign="middle" horizontalAlign="center"  horizontalGap="6" 
 	currentState="{playerModel.mediaFacade.currentState}"
 	initialize="initComponent()">
 	
@@ -116,10 +116,26 @@
 	</mx:State>
 </mx:states>
 
-<mx:LinkButton label="上一首" click="priv()" width="60" height="20"/>
-<mx:LinkButton id="playbt" label="播放" click="playControl()" width="50" height="20"/>
-<mx:LinkButton label="停止" click="stop()" width="60" height="20"/>
-<mx:LinkButton label="下一首" click="next()" width="60" height="20"/>
+<mx:Button click="priv()" 
+	upSkin="@Embed(source='images/left.png')"
+	downSkin="@Embed(source='images/left_down.png')"
+	overSkin="@Embed(source='images/left_over.png')">
+</mx:Button>
+<mx:LinkButton id="playbt"
+	upSkin="@Embed(source='images/play.png')"
+	downSkin="@Embed(source='images/play_down.png')"
+	overSkin="@Embed(source='images/play_over.png')" 
+	click="playControl()"/>
+<mx:LinkButton 
+	upSkin="@Embed(source='images/stop.png')"
+	downSkin="@Embed(source='images/stop_down.png')"
+	overSkin="@Embed(source='images/stop_over.png')"
+	click="stop()"/>
+<mx:LinkButton 
+	upSkin="@Embed(source='images/right.png')"
+	downSkin="@Embed(source='images/right_down.png')"
+	overSkin="@Embed(source='images/right_over.png')"
+	click="next()"/>
 
 <mx:Label text="音量:"/>
 <mx:HSlider id="hs" width="50"
