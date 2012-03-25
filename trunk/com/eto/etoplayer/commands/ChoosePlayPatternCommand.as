@@ -2,7 +2,7 @@ package com.eto.etoplayer.commands
 {
 	import com.adobe.cairngorm.commands.ICommand;
 	import com.adobe.cairngorm.control.CairngormEvent;
-	import com.eto.etoplayer.core.UserConfig;
+	import com.eto.etoplayer.data.UserConfig;
 	import com.eto.etoplayer.events.ChoosePlayParttenEvent;
 
 	public class ChoosePlayPatternCommand implements ICommand

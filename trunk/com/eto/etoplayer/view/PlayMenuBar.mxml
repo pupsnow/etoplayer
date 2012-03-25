@@ -7,9 +7,10 @@
 
 	<mx:Script>
 	<![CDATA[
+		import com.eto.etoplayer.data.UserConfig;
 		import com.eto.etoplayer.events.dataEvents.ApplicationEvent;
 		import com.eto.etoplayer.events.PlayListSortEvent;
-	import com.eto.etoplayer.core.UserConfig;
+
 	import com.eto.etoplayer.events.ChoosePlayParttenEvent;
 	import com.eto.etoplayer.events.SelectFileToPlayListEvent;
 	import com.eto.etoplayer.model.PlayListModel;

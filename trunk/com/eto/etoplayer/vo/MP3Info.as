@@ -1,6 +1,6 @@
 package com.eto.etoplayer.vo
 {
-	import mx.utils.ObjectUtil;
+	//import mx.utils.ObjectUtil;
 	
 	public class MP3Info
 	{

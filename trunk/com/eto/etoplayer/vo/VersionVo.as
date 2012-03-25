@@ -8,7 +8,7 @@ package com.eto.etoplayer.vo
 		/**
 		 * version id.
 		 */			
-		public var version:String = "Alpha 0.4";
+		public var version:String = "Alpha 0.5";
 		
 		/**
 		 * new version id.

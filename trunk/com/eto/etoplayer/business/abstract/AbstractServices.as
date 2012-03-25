@@ -13,7 +13,7 @@ package com.eto.etoplayer.business.abstract
 		
 		protected function initialize():void
 		{
-			
+			//throw new Error("go to die!")
 		}
 	}
 }

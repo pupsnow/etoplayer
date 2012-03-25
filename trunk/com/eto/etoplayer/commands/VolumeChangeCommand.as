@@ -3,7 +3,7 @@ package com.eto.etoplayer.commands
 import com.adobe.cairngorm.commands.ICommand;
 import com.adobe.cairngorm.control.CairngormEvent;
 import com.eto.etoplayer.core.SoundFacade;
-import com.eto.etoplayer.core.UserConfig;
+import com.eto.etoplayer.data.UserConfig;
 import com.eto.etoplayer.events.VolumeChangeEvent;
 import com.eto.etoplayer.model.PlayModel;
 import com.eto.etoplayer.states.PlayState;

@@ -2,6 +2,7 @@
 global
 {
     fontSize: 12px;
+    fontFamily : "Tahoma";
 }
  WindowedApplication
 {

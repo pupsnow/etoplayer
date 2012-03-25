@@ -1,7 +1,12 @@
 package com.eto.etoplayer.util
 {
 import flash.utils.Dictionary;
-	
+
+/**
+ * 
+ * @author Riyco
+ * 
+ */	
 public class ChractorCheckList
 {
 	
